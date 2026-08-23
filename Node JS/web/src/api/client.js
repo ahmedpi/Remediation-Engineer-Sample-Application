@@ -3,23 +3,13 @@
 // card-tokenization request never has to cross origins.
 const FAUXPAY_BASE_URL = '/fauxpay';
 
-function getToken() {
-  return localStorage.getItem('widgetshop_token');
-}
-
-export function setToken(token) {
-  if (token) localStorage.setItem('widgetshop_token', token);
-  else localStorage.removeItem('widgetshop_token');
-}
-
 async function request(path, { method = 'GET', body } = {}) {
   const headers = { 'Content-Type': 'application/json' };
-  const token = getToken();
-  if (token) headers.Authorization = `Bearer ${token}`;
 
   const res = await fetch(`/api${path}`, {
     method,
     headers,
+    credentials: 'include',
     body: body ? JSON.stringify(body) : undefined,
   });
 
@@ -33,6 +23,7 @@ async function request(path, { method = 'GET', body } = {}) {
 export const api = {
   register: (payload) => request('/auth/register', { method: 'POST', body: payload }),
   login: (payload) => request('/auth/login', { method: 'POST', body: payload }),
+  logout: () => request('/auth/logout', { method: 'POST' }),
   me: () => request('/users/me'),
   addresses: () => request('/users/me/addresses'),
   addAddress: (payload) => request('/users/me/addresses', { method: 'POST', body: payload }),
@@ -42,6 +33,12 @@ export const api = {
     return request(`/widgets${qs ? `?${qs}` : ''}`);
   },
   categories: () => request('/categories'),
+
+  widgetReviews: (widgetId) => request(`/widgets/${widgetId}/reviews`),
+  addReview: (widgetId, payload) => request(`/widgets/${widgetId}/reviews`, { method: 'POST', body: payload }),
+  updateReview: (reviewId, payload) => request(`/reviews/${reviewId}`, { method: 'PATCH', body: payload }),
+  deleteReview: (reviewId) => request(`/reviews/${reviewId}`, { method: 'DELETE' }),
+  adminDeleteReview: (reviewId) => request(`/admin/reviews/${reviewId}`, { method: 'DELETE' }),
 
   cart: () => request('/cart'),
   addToCart: (widget_id, quantity) => request('/cart/items', { method: 'POST', body: { widget_id, quantity } }),

@@ -77,4 +77,10 @@ router.patch('/users/:id/role', asyncHandler(async (req, res) => {
   res.json(await db('users').where({ id: req.params.id }).select('id', 'email', 'full_name', 'role').first());
 }));
 
+router.delete('/reviews/:id', asyncHandler(async (req, res) => {
+  const deleted = await db('reviews').where({ id: req.params.id }).del();
+  if (!deleted) return res.status(404).json({ error: 'Review not found' });
+  res.status(204).end();
+}));
+
 module.exports = router;
