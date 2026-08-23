@@ -13,6 +13,7 @@ The app is a **Single Page Application (SPA)** frontend backed by a **REST API**
 **Goals**
 
 - Small-scope e-commerce app: auth, catalog, cart, checkout, order history, refunds/exchanges.
+- Customers who have purchased a widget can rate and review it, to help other shoppers evaluate the catalog.
 - Clear separation of roles: Customer, Admin, Customer Service.
 - Simple enough to reason about end-to-end (schema, API, UI).
 - Integration with a real external payment processor's API surface (tokenization, charge, refund).
@@ -119,8 +120,8 @@ This can be a dedicated API gateway product (e.g. Kong, or a managed cloud gatew
 | Role                      | Capabilities                                                                                                                                                                                    |
 | ------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Guest**                 | Browse catalog, view widget details, register, log in                                                                                                                                           |
-| **Customer**              | Everything Guest can do, plus: manage own profile/addresses, manage cart, checkout, view own order history, request a return/exchange                                                           |
-| **Admin**                 | Manage catalog (create/edit/delete widgets, set prices, manage inventory/stock), manage widget categories, view all orders (read-only), manage user role assignments                            |
+| **Customer**              | Everything Guest can do, plus: manage own profile/addresses, manage cart, checkout, view own order history, request a return/exchange, leave/edit/delete a rating & review on widgets they've purchased |
+| **Admin**                 | Manage catalog (create/edit/delete widgets, set prices, manage inventory/stock), manage widget categories, view all orders (read-only), manage user role assignments, remove reviews that violate content policy |
 | **Customer Service (CS)** | View all orders and customers, issue refunds (full/partial) against an order/payment, process exchanges (accept returned item, ship replacement / adjust order), add internal notes to an order |
 
 Role checks are enforced **server-side** on every API endpoint — the SPA hides UI it shouldn't show, but the API is the actual authorization boundary. Authentication (is this a valid, unexpired token?) is enforced upstream by the API Gateway (§3.3) before a request ever reaches `api`; authorization (is this role allowed to do this?) is enforced by `api` itself, since that's the only place the role model lives.
@@ -142,6 +143,7 @@ The full set of tables, columns, types, and foreign keys is captured in the ER d
 - **`users.failed_login_attempts` / `locked_until`** implement account lockout: consecutive failed logins increment the counter; reaching a configured threshold sets `locked_until` (a cooldown period) and further login attempts are rejected until it elapses. A successful login resets the counter.
 - **`refresh_tokens`** back the session/token-theft mitigations in §3.2: each row is a single-use, rotating refresh token stored hashed (never plaintext), with `expires_at` and `revoked_at`. Revoking a user's sessions (e.g. on password change) means setting `revoked_at` on their active rows here — the short-lived JWT access token itself is never persisted or revocable.
 - **No table ever stores a full card number, CVV, or expiration date.** Only the processor's opaque token (`payments.processor_card_token`) and display metadata (`card_last4`, `card_brand`) are persisted, consistent with basic PCI-DSS scope reduction.
+- **`reviews`**: one review per `(user_id, widget_id)` pair. A customer may only create a review for a widget they have a `paid` order containing (i.e. a verified purchase, tied to the specific `order_items` row) — this is enforced at write time, not just at UI-hint time. `rating` is an integer 1–5; `body` is free text, editable by its author, or removable by its author or an Admin.
 
 The data model is presented as three diagrams grouped by domain — Users & Catalog, Orders & Fulfillment, and Auth & Session Security — so each stays focused and easy to read rather than one large, hard-to-follow schema. An entity referenced without its column list in a diagram below is shown there only to anchor a cross-diagram relationship; its full definition lives in the diagram where it's the primary subject.
 
@@ -155,6 +157,9 @@ erDiagram
     USERS ||--o{ WIDGETS : "created/updated by (admin)"
     CARTS ||--o{ CART_ITEMS : "contains"
     WIDGETS ||--o{ CART_ITEMS : "referenced by"
+    USERS ||--o{ REVIEWS : "writes"
+    WIDGETS ||--o{ REVIEWS : "reviewed by"
+    ORDER_ITEMS ||--o| REVIEWS : "verified purchase for"
 
     USERS {
         id id PK "primary key"
@@ -213,6 +218,17 @@ erDiagram
         id widget_id FK "widget being purchased"
         int quantity "quantity requested"
         int unit_price_cents "re-priced at checkout"
+    }
+
+    REVIEWS {
+        id id PK "primary key"
+        id user_id FK "reviewing customer"
+        id widget_id FK "widget being reviewed"
+        id order_item_id FK "verified-purchase reference (see §5.2)"
+        int rating "1-5 stars"
+        text body "review text"
+        timestamp created_at "review submitted time"
+        timestamp updated_at "last edited time"
     }
 ```
 
@@ -368,6 +384,14 @@ This integration surface is intentionally modeled on how real gateways work (cli
 
 - Public endpoint lists active widgets, filterable by category, searchable by name; widget detail view shows description/price/stock.
 
+### 7.2a Customer — Product Reviews
+
+1. Authenticated customer opens a widget's detail page for a widget they have a `paid` order for, and submits a rating (1–5) and review text.
+2. Server verifies the customer has at least one `order_items` row for that widget on a `paid` order, and that they don't already have a review on this widget; creates the `reviews` row referencing that `order_items` row.
+3. A customer may edit or delete their own review at any time; editing updates `rating`/`body` and `updated_at`.
+4. Admin can remove any review that violates content policy.
+5. Guests and customers can view all reviews (rating, body, reviewing customer's display name, date) on the widget's detail page (§7.2), alongside the widget's average rating and review count.
+
 ### 7.3 Cart & Checkout
 
 1. Authenticated customer adds/updates/removes items in their cart.
@@ -457,6 +481,50 @@ sequenceDiagram
     DB-->>API: widget row
     API-->>SPA: 200 OK (widget detail)
     SPA-->>User: Render detail page
+```
+
+### 7.7.2a Customer — Product Reviews (§7.2a)
+
+```mermaid
+sequenceDiagram
+    actor Customer
+    actor Guest as Guest/Customer
+    participant SPA
+    participant API
+    participant DB
+
+    Customer->>SPA: Open widget detail, submit rating + review text
+    SPA->>API: POST /api/widgets/:id/reviews {rating, body}
+    API->>DB: SELECT order_items JOIN orders WHERE user_id=... AND widget_id=... AND orders.status=paid
+    DB-->>API: matching order_item (or none)
+
+    alt no verified purchase
+        API-->>SPA: 403 Forbidden ("purchase required to review")
+        SPA-->>Customer: Show error
+    else already reviewed this widget
+        API-->>SPA: 409 Conflict ("already reviewed")
+        SPA-->>Customer: Show error, offer edit instead
+    else verified purchase, no existing review
+        API->>DB: INSERT reviews {user_id, widget_id, order_item_id, rating, body}
+        DB-->>API: review row
+        API-->>SPA: 201 Created
+        SPA-->>Customer: Review published
+    end
+
+    Customer->>SPA: Edit/delete own review
+    SPA->>API: PATCH/DELETE /api/reviews/:id
+    API->>API: Check review.user_id == caller
+    API->>DB: UPDATE/DELETE reviews
+    DB-->>API: ack
+    API-->>SPA: 200 OK
+    SPA-->>Customer: Review updated/removed
+
+    Guest->>SPA: Open widget detail
+    SPA->>API: GET /api/widgets/:id/reviews
+    API->>DB: SELECT reviews WHERE widget_id=...
+    DB-->>API: review rows
+    API-->>SPA: 200 OK (reviews, average rating)
+    SPA-->>Guest: Render reviews on detail page
 ```
 
 ### 7.7.3 Cart & Checkout (§7.3)
@@ -771,6 +839,12 @@ Catalog (public)
   GET    /api/widgets/:id
   GET    /api/categories
 
+Reviews
+  GET    /api/widgets/:id/reviews    (public)
+  POST   /api/widgets/:id/reviews    (customer, requires a verified purchase of that widget)
+  PATCH  /api/reviews/:id            (customer, own review only)
+  DELETE /api/reviews/:id            (customer, own review only)
+
 Cart (customer)
   GET    /api/cart
   POST   /api/cart/items
@@ -789,6 +863,7 @@ Admin (admin only)
   POST   /api/admin/categories
   GET    /api/admin/orders           (read-only, all orders)
   PATCH  /api/admin/users/:id/role
+  DELETE /api/admin/reviews/:id      (moderation removal, any customer's review)
 
 Customer Service (customer_service only)
   GET    /api/cs/orders
@@ -818,6 +893,7 @@ All requests reach this surface through the API Gateway (§3.3), which rate-limi
 12. Authenticated users can change their password by re-confirming their current password.
 13. An account is temporarily locked out after a configured number of consecutive failed login attempts, and automatically unlocks after a cooldown period.
 14. A logged-in session survives beyond the short access-token lifetime via silent refresh, without ever exposing a long-lived credential to client-side JavaScript.
+15. Customers who have completed a purchase of a widget can leave a 1–5 star rating and a written review for it; each customer may leave at most one review per widget, editable or deletable by its author. Guests and customers can view all reviews and the widget's average rating on its detail page. Admins can remove any review that violates content policy.
 
 ## 10. Non-Functional Requirements
 
