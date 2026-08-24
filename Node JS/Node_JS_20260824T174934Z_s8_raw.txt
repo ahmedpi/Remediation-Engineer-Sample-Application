@@ -1,0 +1,138 @@
+```json
+{
+  "summary": "The application has two independent pre-authentication paths to financial fraud: (1) a hardcoded FauxPay API key combined with non-invalidating card tokens allows arbitrary card charges from the internet with no login, and (2) the absence of login rate-limiting trivially brute-forces the seeded default credentials, escalating to every privileged role. Multiple server-side race conditions (TOCTOU refund, concurrent oversell) and business-logic bypasses compound the financial fraud surface once authenticated. A committed default database password means any container-level code execution — reachable via an unpinned base-image supply-chain attack — yields a full PII and credential dump.",
+  "ranked_findings": [
+    {
+      "index": 1,
+      "severity": "critical",
+      "exploitability_notes": "CVSS 9.1. Pre-auth, AC:L, no friction. No rate-limit, lockout, or CAPTCHA on POST /auth/login. The seeded admin and CS-agent accounts use the publicly documented default password 'ChangeMe123!', making exploitation trivial without any brute-force at all. For other accounts the unlimited spray throughput enables credential-stuffing at wire speed. Directly unlocks every privileged role and is the entry point for the refund-fraud and PII-dump chains."
+    },
+    {
+      "index": 10,
+      "severity": "high",
+      "exploitability_notes": "CVSS 8.2. Pre-auth, AC:L. The hardcoded fallback 'fauxpay_test_key' is readable in source and activates when FAUXPAY_API_KEY is absent or empty — the common state for a sample/dev deployment. nginx routes /fauxpay/* from port 8080, making /fauxpay/charge and /fauxpay/refund internet-reachable. Standalone high; anchors a critical pre-auth financial fraud chain with finding 15 (token never invalidated)."
+    },
+    {
+      "index": 6,
+      "severity": "high",
+      "exploitability_notes": "CVSS 8.3. Pre-auth but AC:H + UI:R; requires supply-chain compromise or CI/CD pipeline manipulation. Both FROM node:20-alpine stages lack digest pins. A poisoned upstream tag causes malicious code to run in the api container on the next image build. Primary chain value: code execution in the api container unlocks the trivial DB pivot via finding 7."
+    },
+    {
+      "index": 7,
+      "severity": "high",
+      "exploitability_notes": "CVSS 8.1. AV:A limits direct internet reachability, but every Compose service is on the same bridge network. The committed 'widgetshop'/'widgetshop' default makes Postgres accessible to any attacker who achieves code execution in the api container. Full dump of PII, credential hashes, order history, and card tokens in a single psql session. Unlocked by finding 6 or any injection flaw in the Express layer."
+    },
+    {
+      "index": 9,
+      "severity": "high",
+      "exploitability_notes": "CVSS 7.4. Pre-auth, AC:H (requires many timed requests). Non-constant-time `!==` in requireApiKey leaks the real FauxPay API key character-by-character via response latency. Practically reachable from the internet via the /fauxpay/* nginx route. When the env var is set (overriding finding 10's fallback), this is the only remote path to the actual key. Together with finding 10 they guarantee key recovery regardless of deployment state."
+    },
+    {
+      "index": 14,
+      "severity": "high",
+      "exploitability_notes": "CVSS 7.3. Requires CS-role auth (PR:L) and a timing race (AC:H), but scope changes (S:C) due to the cross-component FauxPay call. The button has no loading guard, so concurrent refund requests are trivially launched with a double-click or scripted parallel HTTP. The client-side race reliably widens the server-side TOCTOU window in finding 3. Together they produce n× refund payouts from a single order."
+    },
+    {
+      "index": 8,
+      "severity": "high",
+      "exploitability_notes": "CVSS 7.1. Authenticated (PR:L). The db.transaction() commits stock decrements before the out-of-transaction fauxpay.charge() call; a payment failure or induced timeout never restores inventory. Any authenticated user can intentionally fail payments to permanently drain product stock. Amplified by finding 12's concurrent oversell race, which can drive stock_quantity negative without a single successful purchase."
+    },
+    {
+      "index": 15,
+      "severity": "high",
+      "exploitability_notes": "CVSS 7.1. /fauxpay/tokenize requires no authentication; tokens persist indefinitely in the in-memory Map with no TTL or deletion after charge. Combined with finding 10 (hardcoded key), a pre-auth attacker can tokenize a card once and replay /charge calls unlimited times. Combined with finding 13 (duplicate checkout), a legitimate customer is double-billed from a single UI interaction. Core component of the pre-auth financial fraud chain."
+    },
+    {
+      "index": 4,
+      "severity": "medium",
+      "exploitability_notes": "CVSS 6.5. Requires CS-role JWT (PR:L). Omitting or sending an empty email query parameter bypasses the WHERE clause entirely, returning every customer's order history with no LIMIT — a complete bulk PII exfiltration primitive in one API call. Becomes effectively pre-auth when chained with finding 1 (brute-force the seeded CS-agent default credentials)."
+    },
+    {
+      "index": 5,
+      "severity": "medium",
+      "exploitability_notes": "CVSS 6.5. Requires CS-role auth. The refund handler checks only payment existence and cumulative amount; it never inspects order.status. Exchanged orders retain a live payment_id and refundedSoFar = 0, so both guards pass. Standalone medium; escalates to high-value financial fraud when chained with findings 3 and 14 (TOCTOU + double-submit), enabling unlimited refunds on a single exchanged order."
+    },
+    {
+      "index": 3,
+      "severity": "medium",
+      "exploitability_notes": "CVSS 6.3. Requires CS-role auth and a race win (AC:H). The async FauxPay HTTP call creates a 100-500 ms window between the refund cap check and the DB insert, with no SELECT FOR UPDATE or transaction wrapping. Finding 14 provides the reliable concurrent-request mechanism to win this race. Finding 5 extends the exploitable surface to previously exchanged orders."
+    },
+    {
+      "index": 2,
+      "severity": "medium",
+      "exploitability_notes": "CVSS 5.3. Pre-auth, AC:L. Knex binds the LIKE pattern as a prepared-statement parameter (no SQL injection), but Postgres still processes wildcard semantics inside the bound value. Crafted patterns with many alternating wildcards force catastrophic ILIKE backtracking per row. No rate-limiting on the catalog endpoint. Moderate standalone DoS; contributes to the inventory-exhaustion chain by inducing payment timeouts that prevent stock restoration."
+    },
+    {
+      "index": 0,
+      "severity": "medium",
+      "exploitability_notes": "CVSS 5.3 (C:L). Pre-auth. The ~50-100 ms timing difference between absent-user and wrong-password paths is measurable over low-latency paths. Standalone value is limited to email existence enumeration. Primary chain value is as a reconnaissance primitive feeding finding 1's brute-force with a validated email list, reducing the attack space to confirmed accounts."
+    },
+    {
+      "index": 13,
+      "severity": "low",
+      "exploitability_notes": "CVSS 3.5. Requires auth (PR:L) and UI interaction (UI:R — rapid double-click or queued form-submit events). React 18's render-flush timing creates a genuine race but requires a specific interaction pattern. Standalone I:L (duplicate order). Chained with finding 15 (non-invalidated token), both orders charge the same card token successfully, escalating to a double-billing impact."
+    },
+    {
+      "index": 12,
+      "severity": "low",
+      "exploitability_notes": "CVSS 3.1. Requires auth (PR:L) and a concurrent race win (AC:H). The stock check runs entirely outside the transaction; the in-transaction decrement has no WHERE stock_quantity >= N floor. Standalone I:L (oversell by one unit per race win). Amplified by finding 8 — concurrent requests that also fail payment leave stock_quantity permanently negative, compounding the inventory corruption."
+    },
+    {
+      "index": 11,
+      "severity": "low",
+      "exploitability_notes": "CVSS 2.7. Requires admin role (PR:H). Math.round() returns an integer for any finite input so the isInteger check never fires for valid numerics; the < 0 guard misses zero. If the API layer independently validates price_cents > 0, this is informational. If not, an admin (compromised via finding 1) can set zero-dollar prices, enabling free purchases for any customer. Standalone I:L."
+    }
+  ],
+  "chains": [
+    {
+      "title": "Pre-auth hardcoded FauxPay key + non-invalidated token → unlimited arbitrary card charges",
+      "steps": [10, 15],
+      "severity": "critical",
+      "blocked_by_controls": [],
+      "narrative": "Step 1 — Finding 10: FAUXPAY_API_KEY is absent or empty in a dev/demo deployment, so `const API_KEY = [REDACTED-SECRET] || 'fauxpay_test_key'` resolves to the publicly readable hardcoded literal. nginx proxies /fauxpay/* from port 8080 to the fauxpay container, making the endpoints internet-reachable. Step 2 — Finding 15: POST /fauxpay/tokenize requires no authentication (confirmed in the finding); any caller submits card_number, exp_month, exp_year, cvv and receives a token. The token is written into the in-memory Map with no TTL and no deletion path. Step 3 — Finding 10 + 15: attacker sends POST /fauxpay/charge with Authorization: [REDACTED-BEARER] and the captured token. The requireApiKey middleware accepts the hardcoded key; tokens.get() returns the card record; the charge succeeds. Step 4 — Finding 15: the charge handler has no tokens.delete() call, so the token remains valid. The attacker repeats step 3 indefinitely, issuing unlimited charges against the same card. No account, no login, no prerequisites — fully pre-auth financial fraud from the public internet."
+    },
+    {
+      "title": "Timing email enumeration + unlimited brute-force → account takeover including default admin/CS credentials",
+      "steps": [0, 1],
+      "severity": "critical",
+      "blocked_by_controls": [],
+      "narrative": "Step 1 — Finding 0: POST /auth/login returns in ~2-5 ms when the email is unregistered (bcrypt.compare is never called) and in ~60 ms when the email exists but the password is wrong. An attacker binary-searches the user table by timing repeated requests with a fixed wrong password, building a set of confirmed registered email addresses. Step 2 — Finding 1: POST /auth/login has no rate-limit, no lockout counter, and no CAPTCHA. For the seeded admin and CS-agent accounts, the documented default password 'ChangeMe123!' succeeds immediately — no brute-force needed. For discovered customer emails, an attacker sprays credential-stuffing lists at wire speed. A successful login yields a JWT granting full access to the corresponding role's API surface: admin receives price-management endpoints; CS-agent receives the PII dump (finding 4) and refund fraud surface (findings 3, 5, 14)."
+    },
+    {
+      "title": "Brute-force CS auth → exchanged-order status bypass + TOCTOU race + double-submit → unlimited refund fraud",
+      "steps": [1, 5, 3, 14],
+      "severity": "critical",
+      "blocked_by_controls": [],
+      "narrative": "Step 1 — Finding 1: Authenticate as the CS-agent account using default credentials or credential-stuffing; no rate-limit prevents this. Step 2 — Finding 5: Identify an order whose status is 'exchanged'. The refund handler at cs.js:27-68 checks only (a) payment record exists and (b) cumulative refund does not exceed order.total_cents. It never reads order.status. An exchanged order satisfies both checks: its payment_id is still live and refundedSoFar = 0 (no prior monetary refunds — only an in-kind exchange was issued). Step 3 — Finding 14: The Issue Refund button in CustomerService.jsx has no loading guard; no flag is set before the first await. A double-click or two rapid programmatic HTTP requests both see the same React state (selected, refundAmount, refundReason) and both invoke the refund endpoint concurrently. Step 4 — Finding 3: On the server, both requests read refundedSoFar = 0 from the same pre-lock snapshot, both satisfy 0 + total_cents <= total_cents, both await the async FauxPay HTTP call (~100-500 ms window with no SELECT FOR UPDATE), and both successfully insert refund rows. Result: 2× the order total is paid out via FauxPay. Net financial exposure per targeted order: exchange compensation already received + 2× monetary refund = 3× the original order value."
+    },
+    {
+      "title": "Supply-chain image poisoning → container code execution → full database dump",
+      "steps": [6, 7],
+      "severity": "high",
+      "blocked_by_controls": ["requires successful supply-chain compromise or CI/CD pipeline access (AC:H, UI:R in finding 6)"],
+      "narrative": "Step 1 — Finding 6: Both FROM node:20-alpine stages in api/Dockerfile have no @sha256 digest pin. Docker resolves the tag at build time against whatever the registry currently serves. An attacker who can influence what node:20-alpine resolves to — via tag overwrite on Docker Hub, a compromised upstream publisher, a poisoned mirror, or direct CI/CD pipeline access — injects malicious code that runs inside the api container on the next image build. Step 2 — Finding 7: Once executing code in the api container, the attacker reads the DB_PASSWORD environment variable. If the production secret was never set (or a .env file was not mounted), the Compose default 'widgetshop' applies. The Postgres port is exposed only on the Docker bridge network, but all Compose services (api, migrate) are on that network. A single `psql -h db -U widgetshop -d widgetshop` yields a full dump of all customer PII, bcrypt password hashes, order records, FauxPay tokens, and any other application data — game over for confidentiality. The chain is gated on finding 6's supply-chain prerequisites but is completely unblocked once that step succeeds."
+    },
+    {
+      "title": "FauxPay timing oracle + hardcoded fallback → guaranteed API key recovery in all deployment states",
+      "steps": [9, 10],
+      "severity": "high",
+      "blocked_by_controls": ["timing attack in finding 9 requires many requests and a low-jitter network path (AC:H)"],
+      "narrative": "These two findings cover complementary and exhaustive cases. Finding 10: when FAUXPAY_API_KEY is absent or empty, the key is the public literal 'fauxpay_test_key' — trivially known from source without any network interaction. Finding 9: when the env var IS set with a real secret, the `!==` comparison in requireApiKey exits at the first differing byte, leaking the correct key character-by-character via median response time measurements. An attacker tries all possible next-character values at each position, identifies the one that takes measurably longer to reject, and iterates until the full key is reconstructed. Together these two findings eliminate both deployment states as safe: env var absent → finding 10 gives the key instantly; env var set → finding 9 recovers it via timing. A recovered key grants unrestricted access to /fauxpay/charge and /fauxpay/refund for arbitrary financial operations."
+    },
+    {
+      "title": "Duplicate checkout double-submit + non-invalidated token → double billing on single card",
+      "steps": [13, 15],
+      "severity": "medium",
+      "blocked_by_controls": ["requires UI interaction — rapid double-click or queued form-submit events (UI:R in finding 13)"],
+      "narrative": "Step 1 — Finding 13: The Checkout submit handler never inspects the current value of submitting before proceeding. In React 18, setSubmitting(true) schedules a state update that only disables the Pay button after the next render flush — which occurs at the first await (tokenizeCard). During the synchronous preamble before that flush, if a second click event fires, a second invocation of submit() executes with submitting === false in its closure. Both invocations pass the addressId check, both call tokenizeCard (generating two tokens, or reusing one depending on the flow), and both call api.checkout(). Step 2 — Finding 15: Even if both checkout calls share the same card token, that token is never deleted from FauxPay's in-memory Map after a successful charge. Both /fauxpay/charge calls succeed against the same token. Two orders are created and two charges are issued against the customer's card for what the customer intended as a single purchase. This is a systematic billing defect, not attacker-driven fraud, but it causes direct financial harm to legitimate customers."
+    },
+    {
+      "title": "Pre-auth LIKE wildcard DoS + concurrent oversell race + payment-failure stock drain → permanent inventory DoS",
+      "steps": [2, 12, 8],
+      "severity": "medium",
+      "blocked_by_controls": [],
+      "narrative": "Step 1 — Finding 2: An unauthenticated attacker floods the catalog search endpoint with crafted LIKE patterns (e.g., q=%a%b%c%d%e%f%g%) that force catastrophic backtracking on Postgres ILIKE for every row, saturating database worker threads and degrading response times application-wide — including for FauxPay charge calls issued by the orders endpoint. Step 2 — Finding 12: Multiple authenticated users (or a single attacker with concurrent sessions) simultaneously submit orders for the same product. The stock-sufficiency check at orders.js:33-39 runs outside the database transaction; both requests pass the check on the pre-decrement snapshot, both enter their transactions, and both decrement stock_quantity — driving it below zero with no floor guard. Step 3 — Finding 8: For each concurrent order where the degraded fauxpay.charge() call times out or errors (induced by finding 2's DB load), the catch block updates order.status to 'cancelled' but never increments stock_quantity back. Each such event permanently reduces inventory. An attacker repeating this sequence with targeted products can drive their stock_quantity to arbitrarily negative values, causing them to display as unavailable and blocking all further purchases — a persistent, low-cost DoS on product availability without completing a single successful purchase."
+    }
+  ]
+}
+```
