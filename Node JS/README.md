@@ -21,6 +21,8 @@ Seeded accounts (password `ChangeMe123!`):
 - `admin@widgetshop.test` (admin)
 - `support@widgetshop.test` (customer service)
 
+If you built images before pulling the latest `master`, rebuild rather than just restarting — `docker compose up --build` — so the `web` and `api` images pick up dependency and source changes; a plain `up` reuses stale images.
+
 ## Structure
 
 - `api/` — Express REST API, Knex migrations/seeds, FauxPay client
