@@ -3,8 +3,20 @@
 // card-tokenization request never has to cross origins.
 const FAUXPAY_BASE_URL = '/fauxpay';
 
+let authToken = localStorage.getItem('token');
+
+export function setToken(token) {
+  authToken = token;
+  if (token) {
+    localStorage.setItem('token', token);
+  } else {
+    localStorage.removeItem('token');
+  }
+}
+
 async function request(path, { method = 'GET', body } = {}) {
   const headers = { 'Content-Type': 'application/json' };
+  if (authToken) headers.Authorization = `Bearer ${authToken}`;
 
   const res = await fetch(`/api${path}`, {
     method,
