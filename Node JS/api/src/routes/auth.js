@@ -8,17 +8,6 @@ const asyncHandler = require('../middleware/asyncHandler');
 
 const router = express.Router();
 
-const TOKEN_MAX_AGE_MS = 12 * 60 * 60 * 1000;
-
-function setAuthCookie(res, token) {
-  res.cookie('token', token, {
-    httpOnly: true,
-    secure: true,
-    sameSite: 'strict',
-    maxAge: TOKEN_MAX_AGE_MS,
-  });
-}
-
 router.post('/register', asyncHandler(async (req, res) => {
   const { email, password, full_name } = req.body || {};
   if (!email || !password) {
@@ -42,8 +31,7 @@ router.post('/register', asyncHandler(async (req, res) => {
   await db('carts').insert({ user_id: user.id });
 
   const token = jwt.sign({ sub: user.id, email: user.email, role: user.role }, JWT_SECRET, { expiresIn: '12h' });
-  setAuthCookie(res, token);
-  res.status(201).json({ user });
+  res.status(201).json({ token, user });
 }));
 
 router.post('/login', asyncHandler(async (req, res) => {
@@ -58,15 +46,10 @@ router.post('/login', asyncHandler(async (req, res) => {
   }
 
   const token = jwt.sign({ sub: user.id, email: user.email, role: user.role }, JWT_SECRET, { expiresIn: '12h' });
-  setAuthCookie(res, token);
   res.json({
+    token,
     user: { id: user.id, email: user.email, full_name: user.full_name, role: user.role },
   });
 }));
-
-router.post('/logout', (req, res) => {
-  res.clearCookie('token', { httpOnly: true, secure: true, sameSite: 'strict' });
-  res.status(204).end();
-});
 
 module.exports = router;
