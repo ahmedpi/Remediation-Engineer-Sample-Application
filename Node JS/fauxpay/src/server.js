@@ -7,6 +7,8 @@
 // owns cardholder data end to end.
 const express = require('express');
 const crypto = require('crypto');
+const fs = require('fs');
+const https = require('https');
 
 // Training default so `docker compose up` works with no setup. A real processor
 // key is a per-account secret pulled from a secrets manager (Vault, AWS Secrets
@@ -17,6 +19,12 @@ const crypto = require('crypto');
 // one across staging, CI, and developer machines.
 const API_KEY = process.env.FAUXPAY_API_KEY || 'fauxpay_test_key';
 const PORT = Number(process.env.PORT || 4000);
+
+// Self-signed, generated at container startup by docker-entrypoint.sh — see
+// there for why. Callers (nginx's /fauxpay/ relay, api's fauxpayClient) must
+// be given this cert to trust explicitly, since it has no public CA behind it.
+const TLS_CERT_PATH = process.env.FAUXPAY_TLS_CERT || '/certs/cert.pem';
+const TLS_KEY_PATH = process.env.FAUXPAY_TLS_KEY || '/certs/key.pem';
 
 const app = express();
 app.use(express.json());
@@ -115,4 +123,14 @@ app.post('/refund', requireApiKey, (req, res) => {
 
 app.get('/health', (req, res) => res.json({ status: 'ok' }));
 
-app.listen(PORT, () => console.log(`fauxpay listening on port ${PORT}`));
+https
+  .createServer(
+    {
+      cert: fs.readFileSync(TLS_CERT_PATH),
+      key: fs.readFileSync(TLS_KEY_PATH),
+      minVersion: 'TLSv1.2',
+      maxVersion: 'TLSv1.2',
+    },
+    app
+  )
+  .listen(PORT, () => console.log(`fauxpay listening on port ${PORT} (https, TLS 1.2)`));

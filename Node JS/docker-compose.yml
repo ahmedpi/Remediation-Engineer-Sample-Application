@@ -3,21 +3,37 @@ services:
     build: ./web
     ports:
       - "8080:80"
+      - "8443:443"
+    volumes:
+      # Read-only: nginx only needs FauxPay's cert to verify the upstream TLS
+      # connection in the /fauxpay/ relay, never its private key.
+      - fauxpay_certs:/certs/fauxpay:ro
     depends_on:
-      - api
-      - fauxpay
+      api:
+        condition: service_started
+      fauxpay:
+        # Must wait for FauxPay's cert to actually exist in the shared volume
+        # before nginx starts, since proxy_ssl_trusted_certificate is loaded
+        # at startup — service_started alone races the cert generation.
+        condition: service_healthy
 
   api:
     build: ./api
     env_file: .env
     environment:
       DB_HOST: db
-      FAUXPAY_BASE_URL: http://fauxpay:4000
+      FAUXPAY_BASE_URL: https://fauxpay:4000
+      # Node's fetch (undici) reads this to extend its trusted root store, so
+      # the outbound call to FauxPay's self-signed cert verifies instead of
+      # failing or silently skipping validation.
+      NODE_EXTRA_CA_CERTS: /certs/fauxpay/cert.pem
+    volumes:
+      - fauxpay_certs:/certs/fauxpay:ro
     depends_on:
       db:
         condition: service_healthy
       fauxpay:
-        condition: service_started
+        condition: service_healthy
       migrate:
         condition: service_completed_successfully
     expose:
@@ -67,8 +83,28 @@ services:
     build: ./fauxpay
     environment:
       FAUXPAY_API_KEY: ${FAUXPAY_API_KEY:-fauxpay_test_key}
+    volumes:
+      # Read-write: this is the only container that ever writes the cert/key
+      # (see docker-entrypoint.sh). Others mount it read-only to trust it.
+      - fauxpay_certs:/certs
+    healthcheck:
+      # Plain `wget`'s HTTPS support varies by Alpine build, so this uses
+      # Node's own https module (always present in this image) instead.
+      # rejectUnauthorized:false is fine here — it's FauxPay checking its own
+      # self-signed cert, only to confirm the TLS listener answers so
+      # dependents can safely load the cert this healthcheck already proves
+      # exists.
+      test:
+        - CMD
+        - node
+        - -e
+        - "require('https').get({host:'localhost',port:4000,path:'/health',rejectUnauthorized:false},r=>process.exit(r.statusCode===200?0:1)).on('error',()=>process.exit(1))"
+      interval: 5s
+      timeout: 5s
+      retries: 10
     expose:
       - "4000"
 
 volumes:
   db_data:
+  fauxpay_certs:

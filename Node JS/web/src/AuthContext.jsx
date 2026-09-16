@@ -27,9 +27,15 @@ export function AuthProvider({ children }) {
     setUser(user);
   }
 
-  function logout() {
-    setToken(null);
-    setUser(null);
+  // Revokes the refresh token server-side so the session cannot be resumed
+  // from the cookie; clearing local state alone would leave it usable.
+  async function logout() {
+    try {
+      await api.logout();
+    } finally {
+      setToken(null);
+      setUser(null);
+    }
   }
 
   return (

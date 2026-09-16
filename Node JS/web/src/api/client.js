@@ -9,27 +9,85 @@
 // through our web tier at all.
 const FAUXPAY_BASE_URL = '/fauxpay';
 
-let authToken = localStorage.getItem('token');
+// The access token is held in memory only. It is deliberately not written to
+// localStorage or sessionStorage: anything stored there is readable by any
+// script on the origin, so a single XSS flaw would hand over a usable token.
+// Surviving a page reload is the refresh cookie's job instead — it is httpOnly,
+// so script cannot read it, and the first API call after a reload exchanges it
+// for a new access token (see request() below).
+let authToken = null;
+
+let sessionEnded = false;
 
 export function setToken(token) {
   authToken = token;
-  if (token) {
-    localStorage.setItem('token', token);
-  } else {
-    localStorage.removeItem('token');
-  }
+  // A null token means there is no session to resume, so stop trying to
+  // refresh until a real login supplies one again.
+  sessionEnded = !token;
 }
 
-async function request(path, { method = 'GET', body } = {}) {
+// Access tokens live 15 minutes, so expiry is a normal event rather than an
+// error. Both the reload case (no token in memory) and the expiry case (401)
+// are handled by exchanging the httpOnly refresh cookie for a new token.
+//
+// `sessionEnded` stops an anonymous visitor from firing a doomed refresh on
+// every request: once one fails, we do not ask again until a login succeeds.
+let refreshInflight = null;
+
+function refreshSession() {
+  if (!refreshInflight) {
+    refreshInflight = fetch('/api/auth/refresh', { method: 'POST', credentials: 'include' })
+      .then(async (res) => {
+        if (!res.ok) throw new Error('Session expired');
+        const data = await res.json();
+        setToken(data.token);
+        return data;
+      })
+      .catch((err) => {
+        setToken(null);
+        throw err;
+      })
+      .finally(() => {
+        refreshInflight = null;
+      });
+  }
+  return refreshInflight;
+}
+
+function send(path, { method, body }) {
   const headers = { 'Content-Type': 'application/json' };
   if (authToken) headers.Authorization = `Bearer ${authToken}`;
 
-  const res = await fetch(`/api${path}`, {
+  return fetch(`/api${path}`, {
     method,
     headers,
     credentials: 'include',
     body: body ? JSON.stringify(body) : undefined,
   });
+}
+
+async function request(path, { method = 'GET', body } = {}) {
+  // Auth routes carry no access token and must never recurse into a refresh.
+  const canRefresh = !path.startsWith('/auth/');
+
+  // After a reload the token is gone but the refresh cookie may still be good,
+  // so resume the session before the call rather than spending a certain 401
+  // on it. Failure here just means the caller is anonymous; public routes like
+  // the catalog still work, and protected ones return their own 401 below.
+  if (!authToken && canRefresh && !sessionEnded) {
+    await refreshSession().catch(() => {});
+  }
+
+  let res = await send(path, { method, body });
+
+  if (res.status === 401 && canRefresh && !sessionEnded) {
+    try {
+      await refreshSession();
+    } catch {
+      throw new Error('Your session has expired. Please sign in again.');
+    }
+    res = await send(path, { method, body });
+  }
 
   const data = res.status === 204 ? null : await res.json().catch(() => null);
   if (!res.ok) {
@@ -42,6 +100,7 @@ export const api = {
   register: (payload) => request('/auth/register', { method: 'POST', body: payload }),
   login: (payload) => request('/auth/login', { method: 'POST', body: payload }),
   logout: () => request('/auth/logout', { method: 'POST' }),
+  refresh: () => refreshSession(),
   me: () => request('/users/me'),
   addresses: () => request('/users/me/addresses'),
   addAddress: (payload) => request('/users/me/addresses', { method: 'POST', body: payload }),
