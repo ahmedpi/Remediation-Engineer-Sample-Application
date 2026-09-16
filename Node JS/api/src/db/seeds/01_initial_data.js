@@ -13,6 +13,11 @@ exports.seed = async function (knex) {
   await knex('addresses').del();
   await knex('users').del();
 
+  // TESTING VALUE ONLY — this seed and its fixed admin/CS credentials exist so the
+  // training stack boots with sample data and no setup. They do not survive into
+  // production, where staff accounts are provisioned through an admin invite flow
+  // with a one-time, expiring credential, never a committed password shared across
+  // every environment. This seed itself is not run against a production database.
   const passwordHash = await bcrypt.hash('ChangeMe123!', 10);
 
   const [adminId, csId] = await knex('users')
