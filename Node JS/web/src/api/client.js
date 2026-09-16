@@ -1,6 +1,12 @@
-// FauxPay is reached through the same-origin `/fauxpay` proxy path (see
-// nginx.conf / vite.config.js) rather than a directly published port, so the
-// card-tokenization request never has to cross origins.
+// FauxPay is a fictional payment processor that exists only in this training
+// environment. It is reached through the same-origin `/fauxpay` proxy path (see
+// web/nginx.conf and vite.config.js) so the demo runs from a single published
+// port with no CORS setup.
+//
+// In production this constant does not exist. The browser loads the real
+// processor's JS SDK (e.g. Stripe.js) and posts card data directly to the
+// processor's own domain with a publishable key, so no processor traffic passes
+// through our web tier at all.
 const FAUXPAY_BASE_URL = '/fauxpay';
 
 let authToken = localStorage.getItem('token');
@@ -72,8 +78,18 @@ export const api = {
   csExchange: (orderId, payload) => request(`/cs/orders/${orderId}/exchanges`, { method: 'POST', body: payload }),
 };
 
-// FauxPay tokenization happens directly against the payment processor, never
-// through our own backend, so raw card data never touches our servers.
+// Exchanges card details for a single-use token so the rest of checkout only
+// ever handles the token (see Checkout.jsx -> api.checkout).
+//
+// TRAINING: this POST goes to same-origin `/fauxpay/tokenize`, so the card
+// number travels through our own nginx before reaching the FauxPay container.
+// Only test cards are ever entered here.
+//
+// PRODUCTION: this function is replaced by the processor's SDK, which collects
+// card details in an iframe hosted on the processor's domain and tokenizes them
+// against the processor directly. Our origin never sees the PAN, which is the
+// whole point — it keeps cardholder data out of our infrastructure and out of
+// PCI scope for the web tier.
 export async function tokenizeCard({ card_number, exp_month, exp_year, cvv }) {
   const res = await fetch(`${FAUXPAY_BASE_URL}/tokenize`, {
     method: 'POST',

@@ -33,6 +33,13 @@ services:
       db:
         condition: service_healthy
 
+  # Training database — a disposable container holding seed data only. The
+  # credential defaults below are a boot convenience and do not survive into
+  # production, where Postgres is a managed instance reached over TLS on a
+  # private subnet, its password is held in a secrets manager and injected at
+  # runtime (unique per environment, rotated on a schedule), and the application
+  # connects as a least-privilege role rather than the schema owner. No working
+  # default exists in deployed config — an unset credential fails the connection.
   db:
     image: postgres:16-alpine
     environment:
@@ -49,6 +56,13 @@ services:
     expose:
       - "5432"
 
+  # Fictional payment processor, local to this training stack. There is no
+  # production equivalent of this service: the deployed API calls the real
+  # processor's hosted API instead. The key below is a fixed training default so
+  # the stack boots with no setup — in production the processor's secret key
+  # comes from a secrets manager, is injected at runtime into the api service
+  # only, is rotated on a schedule, and has no working fallback value anywhere in
+  # the repo or the compose file.
   fauxpay:
     build: ./fauxpay
     environment:

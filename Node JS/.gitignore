@@ -2,3 +2,13 @@ node_modules
 .env
 dist
 *.log
+
+# Transient scratch dumps from tooling runs — machine-specific, no review value.
+# Scan reports themselves (SARIF, run metadata, raw tool output) are tracked
+# deliberately so findings and remediation are reviewable in history; do not add
+# ignore rules for them here.
+.scratch_*
+
+# Per-machine Claude Code settings (tool permissions, local overrides). Shared
+# project config belongs in .claude/settings.json, which stays tracked.
+.claude/settings.local.json

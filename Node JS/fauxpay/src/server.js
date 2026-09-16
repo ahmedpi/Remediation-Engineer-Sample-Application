@@ -1,6 +1,20 @@
+// FauxPay — a deliberately simplified stand-in for a real payment processor
+// (Stripe, Adyen, Braintree), built for this training environment only. It is
+// NOT a model of how to build a processor, and nothing here is production code:
+// state is in memory, there is no settlement, no 3-D Secure, no Luhn check, and
+// no fraud scoring. In production this service does not exist — the API talks to
+// the real processor's hosted endpoints over egress-only TLS, and the processor
+// owns cardholder data end to end.
 const express = require('express');
 const crypto = require('crypto');
 
+// Training default so `docker compose up` works with no setup. A real processor
+// key is a per-account secret pulled from a secrets manager (Vault, AWS Secrets
+// Manager) and injected at runtime into the API service alone — never committed,
+// never given a working fallback, never present in the web tier. Production code
+// reads the equivalent value with no `||` default and exits at startup if it is
+// unset, so a missing secret fails closed instead of silently accepting a known
+// one across staging, CI, and developer machines.
 const API_KEY = process.env.FAUXPAY_API_KEY || 'fauxpay_test_key';
 const PORT = Number(process.env.PORT || 4000);
 
@@ -11,6 +25,13 @@ app.use(express.json());
 const tokens = new Map(); // card_token -> { last4, brand }
 const transactions = new Map(); // transaction_id -> { amount_cents, refunded_cents }
 
+// Guards the money-moving endpoints (/charge, /refund) with the merchant's
+// secret key. Plain `!==` is fine for a fictional key in a training container;
+// an equivalent real check uses crypto.timingSafeEqual over equal-length
+// buffers. Note this is the processor's own gate — the application's
+// authorization for these operations lives in the API service, where refunds
+// additionally require an authenticated `customer_service` role and are capped
+// against the order total (see api/src/routes/cs.js).
 function requireApiKey(req, res, next) {
   const header = req.headers.authorization || '';
   const key = header.startsWith('Bearer ') ? header.slice(7) : null;
@@ -24,8 +45,25 @@ function detectBrand(cardNumber) {
   return 'unknown';
 }
 
-// Called directly by the SPA — never routed through our own backend, so raw
-// card data never touches our servers.
+// Unauthenticated by design: tokenization is the one processor call a browser
+// makes, so it cannot carry a merchant secret. Real processors gate it with a
+// publishable key and defend it with per-account rate limiting and fraud
+// scoring; this training stub has neither, and the token Map below has no TTL
+// or size bound. Both are acceptable only because this container is disposable
+// and holds no real card data.
+//
+// TRAINING TOPOLOGY: the SPA reaches this endpoint at same-origin
+// `/fauxpay/tokenize`, which the web tier's nginx forwards here (web/nginx.conf).
+// That means card data DOES pass through infrastructure we operate — contrary to
+// what an earlier version of this comment claimed. It is tolerable here because
+// the numbers are test cards.
+//
+// PRODUCTION TOPOLOGY: no such proxy is deployed. The browser loads the
+// processor's own JS SDK and posts card data directly to the processor's domain,
+// so the PAN never reaches our nginx, our containers, or our logs. That is what
+// keeps the web tier out of the cardholder data environment and the assessment
+// at SAQ A; proxying tokenization through our own origin would pull nginx into
+// scope (SAQ A-EP/D) and put PANs one access-log change away from disk.
 app.post('/tokenize', (req, res) => {
   const { card_number, exp_month, exp_year, cvv } = req.body || {};
   if (!card_number || !exp_month || !exp_year || !cvv) {
