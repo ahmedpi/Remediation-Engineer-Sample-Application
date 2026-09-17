@@ -1,0 +1,176 @@
+{
+  "summary": "The application ships with catastrophic pre-auth defects that compound into full compromise: a committed default JWT_SECRET (F1) grants instant admin role forgery, while merchant nginx exposes the entire FauxPay API (F5) protected only by a committed default bearer key, enabling anonymous money movement. These primary bugs enable chains through unbounded PII exfiltration (F7), unlimited card-token replay (F23), stock-drain (F2/F4), and refresh-token race conditions (F12). Rate-limit spoofing (F13) further neutralizes the only compensating control against credential attacks, and seeded default admin credentials (F17) provide a redundant admin path even without JWT forgery.",
+  "ranked_findings": [
+    {
+      "index": 1,
+      "severity": "critical",
+      "exploitability_notes": "CVSS 9.8 pre-auth full auth bypass. Committed JWT_SECRET lets any reader of the repo sign admin/CS tokens directly, defeating requireAuth and requireRole. No design control mitigates; startup does not denylist known defaults. Root of the largest chain in this system."
+    },
+    {
+      "index": 5,
+      "severity": "critical",
+      "exploitability_notes": "Pre-auth exposure of /fauxpay/charge and /fauxpay/refund through merchant nginx. Only 'protection' is a committed default bearer key. Directly moves money; no api-side audit."
+    },
+    {
+      "index": 23,
+      "severity": "critical",
+      "exploitability_notes": "Tokens never consumed → unlimited replay on /charge. Combined with F5+committed FAUXPAY_API_KEY, a captured or leaked card_token is a permanent charge primitive against any order_id/amount the attacker asserts."
+    },
+    {
+      "index": 17,
+      "severity": "high",
+      "exploitability_notes": "Pre-auth: seeded admin/CS accounts with public password 'ChangeMe123!'. Independent redundant admin takeover path even if operator rotated JWT_SECRET. No first-login rotation."
+    },
+    {
+      "index": 7,
+      "severity": "high",
+      "exploitability_notes": "Post-auth (CS role) unbounded pagination; trivially reached post-F1 JWT forgery. Confidentiality:H — full orders×users PII dump in one call. Ideal sink for chain from F1."
+    },
+    {
+      "index": 12,
+      "severity": "high",
+      "exploitability_notes": "TOCTOU in refresh rotation lets a stolen refresh cookie be simultaneously used by attacker and victim without triggering family-kill. Amplified by F10 (non-Secure cookie) and F18 (no logging of the replay branch even when it does fire)."
+    },
+    {
+      "index": 13,
+      "severity": "high",
+      "exploitability_notes": "Pre-auth rate-limit key spoof via X-Forwarded-For. Nullifies credentialLimiter, feeding brute-force against F21 (timing enumeration) and F11 (existence oracle) to enumerate then crack accounts unhindered."
+    },
+    {
+      "index": 9,
+      "severity": "high",
+      "exploitability_notes": "No HSTS/CSP/XFO/XCTO. Enables downgrade capture of F10 refresh cookie, clickjacking of admin mutations, and XSS→JWT theft from localStorage. Chain amplifier rather than standalone RCE."
+    },
+    {
+      "index": 16,
+      "severity": "high",
+      "exploitability_notes": "Raw PAN/CVV traverses merchant origin. PCI-scope-expanding leak; combined with F8 processor-error echo, becomes a card-testing oracle. UI:R lowers score but harvesting via nginx logs is passive."
+    },
+    {
+      "index": 2,
+      "severity": "medium",
+      "exploitability_notes": "Post-auth stock drain via failed charge loop. Combined with F4 (race) and F22 (price race) forms an inventory-integrity primitive; competitor-DoS and free-goods logic feasible."
+    },
+    {
+      "index": 4,
+      "severity": "medium",
+      "exploitability_notes": "TOCTOU on stock enables overselling / negative stock. Concurrency required (AC:H). Chains with F2 to weaponize inventory abuse."
+    },
+    {
+      "index": 22,
+      "severity": "medium",
+      "exploitability_notes": "Order re-price race outside transaction. Chains with F3 (no audit on admin price changes) so a colluding/forged admin can flip price mid-checkout with no attribution."
+    },
+    {
+      "index": 20,
+      "severity": "medium",
+      "exploitability_notes": "Pre-auth account pre-hijacking; no email verification, no recovery. Chains with F11 enumeration to systematically squat known victim addresses."
+    },
+    {
+      "index": 11,
+      "severity": "medium",
+      "exploitability_notes": "Pre-auth enumeration via 409 branch. Feeds F13-defeated brute force and F17 password reuse checks. Standalone confidentiality only."
+    },
+    {
+      "index": 21,
+      "severity": "medium",
+      "exploitability_notes": "Bcrypt timing enumeration. Redundant with F11 but harder to alert on; chains identically into the F13-bypassed brute force pipeline."
+    },
+    {
+      "index": 0,
+      "severity": "medium",
+      "exploitability_notes": "Missing Idempotency-Key → double-charge/double-refund on retry. Combined with F5+F23 an attacker can weaponize retries to multiply refunds through the exposed /refund."
+    },
+    {
+      "index": 10,
+      "severity": "medium",
+      "exploitability_notes": "Non-Secure refresh cookie in non-production NODE_ENV. Chains with F9 (no HSTS) for first-visit downgrade capture and then F12 to bypass replay detection."
+    },
+    {
+      "index": 8,
+      "severity": "medium",
+      "exploitability_notes": "Processor error detail leaked. Amplifies card-testing signal for chain F16→/fauxpay/tokenize→F8 oracle."
+    },
+    {
+      "index": 3,
+      "severity": "medium",
+      "exploitability_notes": "No audit for admin catalog/role changes. Non-repudiation gap; enables F22 mid-checkout price manipulation to be untraceable after F1-forged admin takeover."
+    },
+    {
+      "index": 15,
+      "severity": "medium",
+      "exploitability_notes": "No login success/failure logging. Ensures F13-enabled brute force and F1 JWT forgery leave no detection surface."
+    },
+    {
+      "index": 18,
+      "severity": "medium",
+      "exploitability_notes": "Family-revoke event silently swallowed. Even where F12 race doesn't apply, the detection primitive produces zero output — pure detection gap."
+    },
+    {
+      "index": 14,
+      "severity": "low",
+      "exploitability_notes": "Public review endpoint discloses user_id and full_name. Provides ID oracle for admin role-change endpoints, feeding F1-forged admin chains."
+    },
+    {
+      "index": 19,
+      "severity": "low",
+      "exploitability_notes": "Self-signed cert on merchant :443. Enables MITM only if attacker is on-path AND user click-throughs; chain enabler for F10/F16 capture in adversarial network positions."
+    },
+    {
+      "index": 6,
+      "severity": "low",
+      "exploitability_notes": "Non-constant-time API-key compare. Practical remote-timing extraction over WAN is extremely difficult; blocked in practice by network jitter. Useful only as theoretical stepping-stone; F5's public default key already trivializes the same asset."
+    }
+  ],
+  "chains": [
+    {
+      "title": "Committed JWT_SECRET → forged admin → bulk PII exfil + price/role manipulation",
+      "steps": [1, 7, 3, 22],
+      "severity": "critical",
+      "blocked_by_controls": [],
+      "narrative": "Read JWT_SECRET from checked-in .env; sign {role:'admin'|'customer_service'} tokens; call GET /cs/orders once for the entire orders×users dataset (F7); mutate widget prices with no audit (F3); race price mutation against in-flight checkouts (F22) to charge inflated totals — all with zero attribution due to F3+F15."
+    },
+    {
+      "title": "Public FauxPay API + public bearer + token replay → arbitrary money movement",
+      "steps": [5, 23, 0],
+      "severity": "critical",
+      "blocked_by_controls": [],
+      "narrative": "External attacker calls /fauxpay/tokenize (or reuses any observed token), then POSTs /fauxpay/charge with the committed FAUXPAY_API_KEY via the merchant-nginx prefix proxy. Tokens are never consumed (F23) so replay is unlimited. Missing Idempotency-Key (F0) further enables refund multiplication on /fauxpay/refund."
+    },
+    {
+      "title": "Seeded default admin creds → full takeover without JWT forgery",
+      "steps": [17, 7, 3],
+      "severity": "critical",
+      "blocked_by_controls": [],
+      "narrative": "Attacker logs in as admin@example / customer_service@example with 'ChangeMe123!' from the seed script and immediately obtains the same primitives as the JWT-forgery chain — bulk PII dump and unaudited catalog/role mutation."
+    },
+    {
+      "title": "Rate-limit bypass → enumeration → password brute force",
+      "steps": [13, 11, 21, 17],
+      "severity": "high",
+      "blocked_by_controls": [],
+      "narrative": "Attacker rotates X-Forwarded-For per request to defeat credentialLimiter (F13); enumerates valid accounts via 409 on /register (F11) and bcrypt-skip timing on /login (F21); then brute-forces or tests the seeded 'ChangeMe123!' (F17) and any common passwords against the discovered accounts."
+    },
+    {
+      "title": "First-visit downgrade → refresh cookie theft → TOCTOU replay",
+      "steps": [9, 10, 12, 18],
+      "severity": "high",
+      "blocked_by_controls": ["requires on-path MITM before first HSTS pin"],
+      "narrative": "No HSTS (F9) means initial :80 request leaks the non-Secure refresh cookie (F10) to a network attacker; the attacker then races the legitimate refresh (F12) so both parties mint valid access tokens; the replay-detection branch that could have caught this produces no log (F18) so operators never notice."
+    },
+    {
+      "title": "Card-testing oracle via merchant origin",
+      "steps": [16, 5, 8],
+      "severity": "high",
+      "blocked_by_controls": ["nginx fauxpay zone 20r/m rate-limit (volume only)"],
+      "narrative": "Attacker submits candidate PANs to /fauxpay/tokenize through merchant nginx (F16 confirms raw PAN traverses the origin), attempts /fauxpay/charge or the api /checkout, and reads processor-error detail forwarded verbatim (F8) to distinguish valid PANs from junk BINs. Rate limit slows but does not eliminate the oracle."
+    },
+    {
+      "title": "Inventory drain / oversell",
+      "steps": [4, 2],
+      "severity": "medium",
+      "blocked_by_controls": [],
+      "narrative": "Concurrent checkouts (F4) drive stock negative or exactly to zero; failure-path never restores stock (F2) so a stream of guaranteed-decline charges from a throwaway token depletes inventory without a single successful payment — competitor sabotage or self-DoS."
+    }
+  ]
+}

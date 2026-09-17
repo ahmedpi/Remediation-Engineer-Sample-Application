@@ -1,0 +1,1488 @@
+{
+  "$schema": "https://json.schemastore.org/sarif-2.1.0.json",
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "Agentic SAST",
+          "version": "1.4.0",
+          "rules": [
+            {
+              "id": "CWE-798: Use of Hard-coded Credentials",
+              "name": "CWE-798: Use of Hard-coded Credentials",
+              "shortDescription": {
+                "text": "Use of Hard-coded Credentials"
+              }
+            },
+            {
+              "id": "CWE-284: Improper Access Control",
+              "name": "CWE-284: Improper Access Control",
+              "shortDescription": {
+                "text": "Improper Access Control"
+              }
+            },
+            {
+              "id": "CWE-294: Authentication Bypass by Capture-replay",
+              "name": "CWE-294: Authentication Bypass by Capture-replay",
+              "shortDescription": {
+                "text": "Authentication Bypass by Capture-replay"
+              }
+            },
+            {
+              "id": "CWE-367: Time-of-check Time-of-use (TOCTOU) Race Condition",
+              "name": "CWE-367: Time-of-check Time-of-use (TOCTOU) Race Condition",
+              "shortDescription": {
+                "text": "Time-of-check Time-of-use (TOCTOU) Race Condition"
+              }
+            },
+            {
+              "id": "CWE-295: Improper Certificate Validation",
+              "name": "CWE-295: Improper Certificate Validation",
+              "shortDescription": {
+                "text": "Improper Certificate Validation"
+              }
+            },
+            {
+              "id": "CWE-1284",
+              "name": "CWE-1284"
+            },
+            {
+              "id": "CWE-290",
+              "name": "CWE-290"
+            },
+            {
+              "id": "CWE-693: Protection Mechanism Failure",
+              "name": "CWE-693: Protection Mechanism Failure",
+              "shortDescription": {
+                "text": "Protection Mechanism Failure"
+              }
+            },
+            {
+              "id": "CWE-319: Cleartext Transmission of Sensitive Information",
+              "name": "CWE-319: Cleartext Transmission of Sensitive Information",
+              "shortDescription": {
+                "text": "Cleartext Transmission of Sensitive Information"
+              }
+            },
+            {
+              "id": "CWE-840: Business Logic Errors",
+              "name": "CWE-840: Business Logic Errors",
+              "shortDescription": {
+                "text": "Business Logic Errors"
+              }
+            },
+            {
+              "id": "CWE-287: Improper Authentication",
+              "name": "CWE-287: Improper Authentication",
+              "shortDescription": {
+                "text": "Improper Authentication"
+              }
+            },
+            {
+              "id": "CWE-204",
+              "name": "CWE-204"
+            },
+            {
+              "id": "CWE-208",
+              "name": "CWE-208"
+            },
+            {
+              "id": "CWE-799",
+              "name": "CWE-799"
+            },
+            {
+              "id": "CWE-614",
+              "name": "CWE-614"
+            },
+            {
+              "id": "CWE-209: Generation of Error Message Containing Sensitive Information",
+              "name": "CWE-209: Generation of Error Message Containing Sensitive Information",
+              "shortDescription": {
+                "text": "Generation of Error Message Containing Sensitive Information"
+              }
+            },
+            {
+              "id": "CWE-359",
+              "name": "CWE-359"
+            },
+            {
+              "id": "CWE-362: Concurrent Execution using Shared Resource with Improper Synchronization (Race Condition)",
+              "name": "CWE-362: Concurrent Execution using Shared Resource with Improper Synchronization (Race Condition)",
+              "shortDescription": {
+                "text": "Concurrent Execution using Shared Resource with Improper Synchronization (Race Condition)"
+              }
+            },
+            {
+              "id": "CWE-778",
+              "name": "CWE-778"
+            }
+          ],
+          "supportedTaxonomies": [
+            {
+              "guid": "b7c8d9e0-1f2a-3b4c-5d6e-7f8090a1b2c3"
+            }
+          ]
+        }
+      },
+      "taxonomies": [
+        {
+          "guid": "b7c8d9e0-1f2a-3b4c-5d6e-7f8090a1b2c3",
+          "name": "CWE",
+          "organization": "MITRE",
+          "shortDescription": {
+            "text": "The MITRE Common Weakness Enumeration"
+          },
+          "informationUri": "https://cwe.mitre.org/",
+          "taxa": [
+            {
+              "id": "CWE-204",
+              "helpUri": "https://cwe.mitre.org/data/definitions/204.html"
+            },
+            {
+              "id": "CWE-208",
+              "helpUri": "https://cwe.mitre.org/data/definitions/208.html"
+            },
+            {
+              "id": "CWE-209",
+              "helpUri": "https://cwe.mitre.org/data/definitions/209.html",
+              "name": "Generation of Error Message Containing Sensitive Information",
+              "shortDescription": {
+                "text": "Generation of Error Message Containing Sensitive Information"
+              }
+            },
+            {
+              "id": "CWE-284",
+              "helpUri": "https://cwe.mitre.org/data/definitions/284.html",
+              "name": "Improper Access Control",
+              "shortDescription": {
+                "text": "Improper Access Control"
+              }
+            },
+            {
+              "id": "CWE-287",
+              "helpUri": "https://cwe.mitre.org/data/definitions/287.html",
+              "name": "Improper Authentication",
+              "shortDescription": {
+                "text": "Improper Authentication"
+              }
+            },
+            {
+              "id": "CWE-290",
+              "helpUri": "https://cwe.mitre.org/data/definitions/290.html"
+            },
+            {
+              "id": "CWE-294",
+              "helpUri": "https://cwe.mitre.org/data/definitions/294.html",
+              "name": "Authentication Bypass by Capture-replay",
+              "shortDescription": {
+                "text": "Authentication Bypass by Capture-replay"
+              }
+            },
+            {
+              "id": "CWE-295",
+              "helpUri": "https://cwe.mitre.org/data/definitions/295.html",
+              "name": "Improper Certificate Validation",
+              "shortDescription": {
+                "text": "Improper Certificate Validation"
+              }
+            },
+            {
+              "id": "CWE-319",
+              "helpUri": "https://cwe.mitre.org/data/definitions/319.html",
+              "name": "Cleartext Transmission of Sensitive Information",
+              "shortDescription": {
+                "text": "Cleartext Transmission of Sensitive Information"
+              }
+            },
+            {
+              "id": "CWE-359",
+              "helpUri": "https://cwe.mitre.org/data/definitions/359.html"
+            },
+            {
+              "id": "CWE-362",
+              "helpUri": "https://cwe.mitre.org/data/definitions/362.html",
+              "name": "Concurrent Execution using Shared Resource with Improper Synchronization (Race Condition)",
+              "shortDescription": {
+                "text": "Concurrent Execution using Shared Resource with Improper Synchronization (Race Condition)"
+              }
+            },
+            {
+              "id": "CWE-367",
+              "helpUri": "https://cwe.mitre.org/data/definitions/367.html",
+              "name": "Time-of-check Time-of-use (TOCTOU) Race Condition",
+              "shortDescription": {
+                "text": "Time-of-check Time-of-use (TOCTOU) Race Condition"
+              }
+            },
+            {
+              "id": "CWE-614",
+              "helpUri": "https://cwe.mitre.org/data/definitions/614.html"
+            },
+            {
+              "id": "CWE-693",
+              "helpUri": "https://cwe.mitre.org/data/definitions/693.html",
+              "name": "Protection Mechanism Failure",
+              "shortDescription": {
+                "text": "Protection Mechanism Failure"
+              }
+            },
+            {
+              "id": "CWE-778",
+              "helpUri": "https://cwe.mitre.org/data/definitions/778.html"
+            },
+            {
+              "id": "CWE-798",
+              "helpUri": "https://cwe.mitre.org/data/definitions/798.html",
+              "name": "Use of Hard-coded Credentials",
+              "shortDescription": {
+                "text": "Use of Hard-coded Credentials"
+              }
+            },
+            {
+              "id": "CWE-799",
+              "helpUri": "https://cwe.mitre.org/data/definitions/799.html"
+            },
+            {
+              "id": "CWE-840",
+              "helpUri": "https://cwe.mitre.org/data/definitions/840.html",
+              "name": "Business Logic Errors",
+              "shortDescription": {
+                "text": "Business Logic Errors"
+              }
+            },
+            {
+              "id": "CWE-1284",
+              "helpUri": "https://cwe.mitre.org/data/definitions/1284.html"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "applicationId": "",
+        "scanDegraded": false,
+        "unrankedFallback": false
+      },
+      "results": [
+        {
+          "ruleId": "CWE-798: Use of Hard-coded Credentials",
+          "level": "error",
+          "message": {
+            "text": "Committed default JWT_SECRET enables full auth bypass  [CVSS 9.8: CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H]"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "Node JS/.env.example"
+                },
+                "region": {
+                  "startLine": 31
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "critical",
+            "security-severity": "9.8",
+            "cvssRating": "Critical",
+            "category": "CWE-798: Use of Hard-coded Credentials",
+            "cvssVector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H",
+            "cwe": "CWE-798 - Use of Hard-coded Credentials",
+            "cweId": "CWE-798",
+            "cweName": "Use of Hard-coded Credentials",
+            "cvssScore": 9.8,
+            "offensivePriority": "P3",
+            "offensivePriorityLabel": "Internal Network / Privileged Position",
+            "offensivePriorityReason": "Internal Network / Privileged Position | *exposure unverified \u2014 no CMDB context; AV:N (network-routable; internet exposure unconfirmed)*",
+            "confidence": 0.95,
+            "description": "*2 additional call site(s) collapsed during dedup \u2014 same root cause; each location needs the same fix applied.*\n\n#### Description\napi/src/middleware/auth.js:18 reads JWT_SECRET from process.env with no denylist of known-bad values. services/tokens.js:22 signs {sub, email, role} using that secret; requireAuth (auth.js:26) verifies with the same secret and requireRole (auth.js:33-37) trusts req.user.role verbatim. Because the JWT_SECRET is present in the checked-in .env / .env.example (line 39 in each), the signing key is public. Anyone who reads the repo can `jwt.sign({sub:1,email:'x',role:'admin'}, KNOWN_SECRET)` and immediately pass requireAuth and requireRole('admin') on the deployed instance.\n\n#### Impact\nThe repository ships a committed placeholder JWT_SECRET in both .env.example and .env (the .env comment explicitly states the values are identical to the committed example and must be treated as public). Any operator who deploys the training stack \u2014 or reuses this template \u2014 without rotating the secret grants any anonymous internet attacker the ability to forge HS256 access tokens for arbitrary user id and role (customer_service / admin), collapsing all authorization checks in api/src/middleware/auth.js and routes/admin.js|cs.js.\n\n#### Exploit scenario\nAttacker clones the public repo, reads JWT_SECRET from .env.example, mints an HS256 token `{sub:1,role:'admin',exp:<future>}` locally, sends `Authorization: Bearer <token>` to https://target:8443/api/admin/users/:id/role, and takes over the account catalog, prices, stock, refunds, and CS workflows without any credential. Same key also mints customer_service tokens giving unrestricted refund issuance via /api/cs/refund \u2192 /fauxpay/refund.\n\n#### Preconditions\n- Operator deployed without rotating the placeholder JWT_SECRET (explicitly the training default)\n- Attacker can reach nginx :8443 / :8080\n\n```\nJWT_SECRET=[REDACTED-SECRET] default value in .env.example line 39, identical in .env] ... const JWT_SECRET = process.env.JWT_SECRET; ... req.user = jwt.verify(token, JWT_SECRET);\n```\n\n#### How to fix\nDo not ship any real-looking JWT_SECRET value in .env / .env.example \u2014 leave it empty or use a well-known sentinel like 'CHANGEME_DO_NOT_USE'. Add a startup guard in api/src/middleware/auth.js (or a boot script) that refuses to start when JWT_SECRET is empty, shorter than 32 bytes, or matches a denylist of committed defaults. Also enforce `jwt.verify(token, JWT_SECRET, { algorithms: ['HS256'], issuer, audience })` in auth.js:26 to prevent algorithm/claim confusion.\n\n**Exploitability:** CVSS 9.8 pre-auth full auth bypass. Committed JWT_SECRET lets any reader of the repo sign admin/CS tokens directly, defeating requireAuth and requireRole. No design control mitigates; startup does not denylist known defaults. Root of the largest chain in this system.\n\n#### Adversarial verification\n**Verdict:** TRUE_POSITIVE (confidence: 10/10) \u2014 committed placeholder JWT_SECRET is loaded verbatim into the deployed api container via docker-compose's env_file:.env; no denylist, no rotation, no secondary control \u2014 anyone with the repo mints admin/CS tokens at will.",
+            "dedupRelatedLocationCount": 2
+          },
+          "taxa": [
+            {
+              "toolComponent": {
+                "name": "CWE",
+                "guid": "b7c8d9e0-1f2a-3b4c-5d6e-7f8090a1b2c3"
+              },
+              "id": "CWE-798"
+            }
+          ],
+          "relatedLocations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "Node JS/.env"
+                },
+                "region": {
+                  "startLine": 39
+                }
+              },
+              "message": {
+                "text": "Additional call site \u2014 collapsed during dedup; same root cause as the primary location and needs the same fix."
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "Node JS/api/src/server.js"
+                },
+                "region": {
+                  "startLine": 3,
+                  "endLine": 6
+                }
+              },
+              "message": {
+                "text": "Additional call site \u2014 collapsed during dedup; same root cause as the primary location and needs the same fix."
+              }
+            }
+          ],
+          "rank": 98.0,
+          "partialFingerprints": {
+            "vvaFindingId/v1": "vvaf1_fc51e075d250a4a720c3088b45932e3f"
+          }
+        },
+        {
+          "ruleId": "CWE-798: Use of Hard-coded Credentials",
+          "level": "error",
+          "message": {
+            "text": "Hardcoded default admin / customer_service password in seed  [CVSS 9.4: CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:L]"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "Node JS/api/src/db/seeds/01_initial_data.js"
+                },
+                "region": {
+                  "startLine": 21
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "critical",
+            "security-severity": "9.4",
+            "cvssRating": "Critical",
+            "category": "CWE-798: Use of Hard-coded Credentials",
+            "cvssVector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:L",
+            "cwe": "CWE-798 - Use of Hard-coded Credentials",
+            "cweId": "CWE-798",
+            "cweName": "Use of Hard-coded Credentials",
+            "cvssScore": 9.4,
+            "offensivePriority": "P3",
+            "offensivePriorityLabel": "Internal Network / Privileged Position",
+            "offensivePriorityReason": "Internal Network / Privileged Position | *admin/privileged role required*",
+            "confidence": 0.9,
+            "description": "#### Description\n`seeds/01_initial_data.js:21` hashes the string literal `'ChangeMe123!'` with bcrypt(10) and assigns the same hash to both privileged accounts on lines 25\u201326. The password is public in the repository. There is no first-login rotation, no expiry, and no check that prevents this seed from running against a non-training database \u2014 `npm run migrate` in the compose file will happily invoke it.\n\n#### Impact\nThe seed creates `admin@widgetshop.test` (role=admin) and `support@widgetshop.test` (role=customer_service) with a single, committed password `ChangeMe123!`. Any deployment that runs the seed without immediately rotating those accounts hands full admin and refund-issuing access to anyone who reads the repo.\n\n#### Exploit scenario\nOperator brings up the stack on a staging or shared host, forgets to disable the seed, and never rotates the accounts. Attacker POSTs {email:'admin@widgetshop.test',password:'[REDACTED-SECRET]'} to /api/auth/login, receives an admin JWT, and can now delete widgets, change prices, and PATCH /admin/users/:id/role to elevate other accounts.\n\n#### Preconditions\n- Seed executed (default in the shipped `migrate` service)\n- Accounts not rotated after first boot\n\n```\nconst passwordHash = await bcrypt.hash('ChangeMe123!', 10);\n\nconst [adminId, csId] = await knex('users')\n  .insert([\n    { email: 'admin@widgetshop.test', password_hash: passwordHash, full_name: 'Default Admin', role: 'admin' },\n    { email: 'support@widgetshop.test', password_hash: passwordHash, full_name: 'Default CS Agent', role: 'customer_service' },\n  ])\n```\n\n#### How to fix\nRemove hardcoded staff credentials from the seed. Generate a random one-time password at first migrate, print it once to the operator, and require a rotation on first login. Never share the same password across two role-privileged accounts.\n\n**Exploitability:** Pre-auth: seeded admin/CS accounts with public password 'ChangeMe123!'. Independent redundant admin takeover path even if operator rotated JWT_SECRET. No first-login rotation.\n\n#### Adversarial verification\n**Verdict:** TRUE_POSITIVE (confidence: 8/10) \u2014 hardcoded admin/CS bcrypt password in a committed seed maps to a real /auth/login sink and yields admin JWT once the seed runs; the training-purpose comment doesn't neutralize it under Rule F."
+          },
+          "taxa": [
+            {
+              "toolComponent": {
+                "name": "CWE",
+                "guid": "b7c8d9e0-1f2a-3b4c-5d6e-7f8090a1b2c3"
+              },
+              "id": "CWE-798"
+            }
+          ],
+          "rank": 94.0,
+          "partialFingerprints": {
+            "vvaFindingId/v1": "vvaf1_493faf7894f6e7c09100a8194996cf01"
+          }
+        },
+        {
+          "ruleId": "CWE-284: Improper Access Control",
+          "level": "error",
+          "message": {
+            "text": "Merchant nginx prefix-proxies entire FauxPay API externally  [CVSS 8.2: CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:H/A:N]"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "Node JS/web/nginx.conf"
+                },
+                "region": {
+                  "startLine": 90
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "high",
+            "security-severity": "8.2",
+            "cvssRating": "High",
+            "category": "CWE-284: Improper Access Control",
+            "cvssVector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:H/A:N",
+            "cwe": "CWE-284 - Improper Access Control",
+            "cweId": "CWE-284",
+            "cweName": "Improper Access Control",
+            "cvssScore": 8.2,
+            "offensivePriority": "P3",
+            "offensivePriorityLabel": "Internal Network / Privileged Position",
+            "offensivePriorityReason": "Internal Network / Privileged Position | *exposure unverified \u2014 no CMDB context; AV:N (network-routable; internet exposure unconfirmed)*",
+            "confidence": 0.95,
+            "description": "#### Description\nnginx.conf declares `location /fauxpay/ { proxy_pass https://fauxpay:4000/; }` as a PREFIX match. That matches /fauxpay/charge and /fauxpay/refund in addition to /fauxpay/tokenize. The file's own comment on lines 76-89 acknowledges this: 'every FauxPay route is reachable from wherever this port is exposed, including /fauxpay/charge and /fauxpay/refund. Those two still require the merchant secret key, so they are not anonymously callable.' The mitigation named \u2014 the secret key \u2014 is `FAUXPAY_API_KEY=[REDACTED-SECRET]` committed to .env.example and used as a `${FAUXPAY_API_KEY:[REDACTED-SECRET]]}` fallback in docker-compose.yml (line 85). Any operator following the training README that has not rotated the placeholder is exposing anonymous money movement. The correct configuration per the file's own comment is `location = /fauxpay/tokenize` (exact match), not a prefix.\n\n#### Impact\nEvery FauxPay route \u2014 including /charge and /refund \u2014 is reachable from the public internet on port 8443 through the merchant origin, when the production topology requires those endpoints be egress-only (called by the API service over the internal Docker network). Combined with the committed default FAUXPAY_API_KEY (baked into docker-compose.yml and .env.example), a remote unauthenticated attacker can bypass all api-side customer_service role checks, order-total caps, and audit trails and issue arbitrary /fauxpay/refund and /fauxpay/charge calls, moving money and inflating processor liability.\n\n#### Exploit scenario\nAttacker discovers a Widget Shop deployment at https://target:8443. They call `POST https://target:8443/fauxpay/tokenize` (unauthenticated) with any 13-19 digit card to mint a token, then `POST /fauxpay/charge` with `Authorization: [REDACTED-BEARER]` \u2014 the committed default. The charge succeeds without any customer session, order record, or CS role. They then call `POST /fauxpay/refund` with the returned transaction_id and a chosen amount to move funds outside of the API's cs.js order-total cap and audit path.\n\n#### Preconditions\n- Operator deployed the training stack without rotating FAUXPAY_API_KEY (default committed to repo)\n- Port 8443 (or 8080) reachable from the attacker's network\n\n```\nlocation /fauxpay/ {\n    limit_req zone=fauxpay burst=10 nodelay;\n    proxy_pass https://fauxpay:4000/;\n    proxy_set_header Host $host;\n    ...\n}\n```\n\n#### How to fix\nProperty: FauxPay privileged endpoints (/charge, /refund) MUST NOT be reachable from the merchant edge. In web/nginx.conf line 90, replace `location /fauxpay/` with an exact-match `location = /fauxpay/tokenize`, and drop the trailing `/` in proxy_pass so only tokenization is relayed. Additionally block the code-level fallback for FAUXPAY_API_KEY (require the env var to be present or exit at boot).\n\n**Exploitability:** Pre-auth exposure of /fauxpay/charge and /fauxpay/refund through merchant nginx. Only 'protection' is a committed default bearer key. Directly moves money; no api-side audit.\n\n#### Adversarial verification\n**Verdict:** TRUE_POSITIVE (confidence: 9/10) \u2014 nginx prefix match exposes /charge and /refund, whose only gate is a Bearer token whose default value is committed in .env.example, docker-compose.yml, and server.js; attacker can mint tokens and issue charges/refunds without any customer session or CS role."
+          },
+          "taxa": [
+            {
+              "toolComponent": {
+                "name": "CWE",
+                "guid": "b7c8d9e0-1f2a-3b4c-5d6e-7f8090a1b2c3"
+              },
+              "id": "CWE-284"
+            }
+          ],
+          "rank": 82.0,
+          "partialFingerprints": {
+            "vvaFindingId/v1": "vvaf1_44bf6204d668fa6d914a67a2a0d955a1"
+          }
+        },
+        {
+          "ruleId": "CWE-294: Authentication Bypass by Capture-replay",
+          "level": "error",
+          "message": {
+            "text": "Card tokens never consumed \u2014 unlimited replay on /charge  [CVSS 8.2: CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:H/A:N]"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "Node JS/fauxpay/src/server.js"
+                },
+                "region": {
+                  "startLine": 89
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "high",
+            "security-severity": "8.2",
+            "cvssRating": "High",
+            "category": "CWE-294: Authentication Bypass by Capture-replay",
+            "cvssVector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:H/A:N",
+            "cwe": "CWE-294 - Authentication Bypass by Capture-replay",
+            "cweId": "CWE-294",
+            "cweName": "Authentication Bypass by Capture-replay",
+            "cvssScore": 8.2,
+            "offensivePriority": "P3",
+            "offensivePriorityLabel": "Internal Network / Privileged Position",
+            "offensivePriorityReason": "Internal Network / Privileged Position | *exposure unverified \u2014 no CMDB context; AV:N (network-routable; internet exposure unconfirmed)*",
+            "confidence": 0.8,
+            "description": "#### Description\nState-machine defect in the tokenize\u2192charge\u2192refund pipeline. `/tokenize` (unauth, reachable through merchant nginx /fauxpay/ per web/vite.config.js:13 and the production nginx relay described in the file header) populates the module-scope `tokens` Map at server.js:85 with `{last4, brand}` and returns the opaque token to the browser. `/charge` at line 91 performs `tokens.get(card_token)` but never `tokens.delete(card_token)` and never records any per-token consumption counter, expiry, amount cap, order binding, or holder identity. On line 97-98 a fresh transactionId is minted and stored regardless of prior usage. Because the FAUXPAY_API_KEY has a committed default (`fauxpay_test_key` per threat T8/T28) and is stored in-repo (fauxpayClient.js:2, docker-compose.yml), the requireApiKey gate at line 46 does not stop an external attacker who knows or intercepted a card_token. The state machine also has no `charged` state and no linkage between the token that produced a transaction and the order_id passed in the body \u2014 the caller freely asserts both amount_cents and order_id at line 90.\n\n#### Impact\nA `card_token` returned by /tokenize is a permanent bearer credential for that card. Any caller in possession of the FauxPay bearer key (the committed default per T8) can replay a single token to create an unbounded number of `/charge` transactions for arbitrary amounts against the same card, because the token is neither single-use, TTL-bound, nor bound to the caller/order that created it.\n\n#### Exploit scenario\nAttacker sniffs (or is themselves a compromised merchant with visibility to) one `/tokenize` response for a victim card and obtains the FAUXPAY_API_KEY default. They repeatedly POST /fauxpay/charge with the same card_token and escalating amount_cents and forged order_ids; each request returns 201 with a new transaction_id and no back-pressure from the processor. The victim's card is charged N times without any tokenize call being replayed.\n\n#### Preconditions\n- Knowledge of the FAUXPAY_API_KEY (trivial \u2014 committed default per T8)\n- A leaked/observed card_token from a prior legitimate /tokenize (or one the attacker minted themselves, since /tokenize is unauth)\n\n```\napp.post('/charge', requireApiKey, (req, res) => {\n  const { card_token, amount_cents, order_id } = req.body || {};\n  const card = tokens.get(card_token);\n  if (!card) return res.status(400).json({ error: 'Unknown card_token' });\n  ...\n  const transactionId = `txn_${crypto.randomBytes(16).toString('hex')}`;\n  transactions.set(transactionId, { amount_cents, refunded_cents: 0, order_id });\n  res.status(201).json({ transaction_id: transactionId, ... });\n});\n```\n\n#### How to fix\nTokens returned by /tokenize must be either single-use (delete from `tokens` on first successful /charge) or bound to (merchant, amount, currency, order_id, expiry) at tokenization time and validated exactly against those parameters at /charge. Enforce at server.js:91 by consuming the token (`tokens.delete(card_token)`) after the transaction row is created, and reject charges whose asserted amount/order do not match the pre-committed values stored in the tokens Map.\n\n**Exploitability:** Tokens never consumed \u2192 unlimited replay on /charge. Combined with F5+committed FAUXPAY_API_KEY, a captured or leaked card_token is a permanent charge primitive against any order_id/amount the attacker asserts.\n\n#### Adversarial verification\n**Verdict:** TRUE_POSITIVE (confidence: 9/10) \u2014 token never consumed; nginx `/fauxpay/` prefix exposes `/charge` externally; committed API-key default and unauth `/tokenize` complete the replay path."
+          },
+          "taxa": [
+            {
+              "toolComponent": {
+                "name": "CWE",
+                "guid": "b7c8d9e0-1f2a-3b4c-5d6e-7f8090a1b2c3"
+              },
+              "id": "CWE-294"
+            }
+          ],
+          "rank": 82.0,
+          "partialFingerprints": {
+            "vvaFindingId/v1": "vvaf1_a266b1a581740260fd6e1a01bd1afcd2"
+          }
+        },
+        {
+          "ruleId": "CWE-367: Time-of-check Time-of-use (TOCTOU) Race Condition",
+          "level": "error",
+          "message": {
+            "text": "TOCTOU in refresh-token rotation defeats replay detection  [CVSS 7.4: CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:N]"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "Node JS/api/src/services/tokens.js"
+                },
+                "region": {
+                  "startLine": 81
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "high",
+            "security-severity": "7.4",
+            "cvssRating": "High",
+            "category": "CWE-367: Time-of-check Time-of-use (TOCTOU) Race Condition",
+            "cvssVector": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:N",
+            "cwe": "CWE-367 - Time-of-check Time-of-use (TOCTOU) Race Condition",
+            "cweId": "CWE-367",
+            "cweName": "Time-of-check Time-of-use (TOCTOU) Race Condition",
+            "cvssScore": 7.4,
+            "offensivePriority": "P3",
+            "offensivePriorityLabel": "Internal Network / Privileged Position",
+            "offensivePriorityReason": "Internal Network / Privileged Position | *exposure unverified \u2014 no CMDB context; AV:N (network-routable; internet exposure unconfirmed)*",
+            "confidence": 0.85,
+            "description": "#### Description\nrotateSession performs a check-then-act sequence with no row-level lock, no SELECT ... FOR UPDATE, and no atomic UPDATE ... WHERE revoked_at IS NULL. The flow is: (1) SELECT the row by token_hash (line 83); (2) test `existing.revoked_at` (line 87); (3) later UPDATE that same row to set revoked_at (line 103) and INSERT a new refresh token (line 104). Two concurrent POST /api/auth/refresh requests carrying the same refresh cookie both read revoked_at = NULL, both fall through the 'if (existing.revoked_at)' branch, both perform the revoke-then-issue sequence, and both mint fresh access tokens and refresh cookies for the same user. The 'family kill' branch (lines 87-93) that is supposed to fire when a consumed token is presented a second time is bypassed entirely, because from each concurrent transaction's perspective the token is still unused. Trust boundary: external HTTP cookie enters at routes/auth.js:78 (`req.cookies?.[REFRESH_COOKIE]`) \u2192 security decision (single-use rotation) is made at services/tokens.js:87-103.\n\n#### Impact\nA single refresh token can be rotated into two live sessions concurrently, silently defeating the single-use / family-revocation defense. An attacker holding a stolen refresh cookie can race the legitimate user's browser and obtain a persistent parallel session without ever tripping the 'replay \u21d2 revoke family' path that the design relies on.\n\n#### Exploit scenario\nAttacker acquires a victim's refresh cookie (log leak, MITM against the self-signed cert during onboarding, XSS-adjacent cookie leak) and immediately fires two POST /api/auth/refresh requests in parallel with that cookie. Both requests race past the `existing.revoked_at` check; both revoke the presented row and both insert a new refresh_tokens row and set a new cookie in their response. Attacker keeps his new cookie/access token; the victim's browser keeps its own. The stolen-token replay detector never triggers, so no family-wide revocation ever occurs and both sessions remain live for the full 7-day TTL.\n\n#### Preconditions\n- Attacker has obtained one refresh cookie belonging to the victim\n- Attacker can send two /api/auth/refresh requests that hit the DB within the same rotation window (single-digit ms is sufficient on shared PG)\n\n```\nconst existing = await db('refresh_tokens').where({ token_hash }).first();\nif (!existing) return null;\nif (existing.revoked_at) {\n  await db('refresh_tokens').where({ user_id: existing.user_id }).whereNull('revoked_at').update({ revoked_at: db.fn.now() });\n  return null;\n}\nif (new Date(existing.expires_at) <= new Date()) return null;\n...\nawait db('refresh_tokens').where({ id: existing.id }).update({ revoked_at: db.fn.now() });\nconst nextToken = await issueRefreshToken(user.id, existing.id);\n```\n\n#### How to fix\nThe single-use guarantee must be enforced atomically. Replace the SELECT + conditional UPDATE with an atomic `UPDATE refresh_tokens SET revoked_at = now() WHERE token_hash = ? AND revoked_at IS NULL RETURNING id, user_id, expires_at` inside a transaction, and only mint the replacement pair if that UPDATE actually affected one row. If the affected count is 0, treat it as a replay and run the family-wide revoke branch. Change lives at services/tokens.js:81-108.\n\n**Exploitability:** TOCTOU in refresh rotation lets a stolen refresh cookie be simultaneously used by attacker and victim without triggering family-kill. Amplified by F10 (non-Secure cookie) and F18 (no logging of the replay branch even when it does fire).\n\n#### Adversarial verification\n**Verdict:** TRUE_POSITIVE (confidence: 9/10) \u2014 Non-atomic check-then-act on refresh_tokens with no transaction, no FOR UPDATE, and no `whereNull('revoked_at')` on the UPDATE; two parallel /api/auth/refresh calls with the same leaked cookie both pass the revoked-check and both mint new sessions, bypassing the family-kill replay detector."
+          },
+          "taxa": [
+            {
+              "toolComponent": {
+                "name": "CWE",
+                "guid": "b7c8d9e0-1f2a-3b4c-5d6e-7f8090a1b2c3"
+              },
+              "id": "CWE-367"
+            }
+          ],
+          "rank": 74.0,
+          "partialFingerprints": {
+            "vvaFindingId/v1": "vvaf1_5a38c50acfbd8eab0d8ebf11b6fea4b1"
+          }
+        },
+        {
+          "ruleId": "CWE-295: Improper Certificate Validation",
+          "level": "error",
+          "message": {
+            "text": "Merchant TLS listener uses a self-signed cert minted at container start  [CVSS 8.0: CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:C/C:H/I:H/A:N]"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "Node JS/web/generate-cert.sh"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "high",
+            "security-severity": "8.0",
+            "cvssRating": "High",
+            "category": "CWE-295: Improper Certificate Validation",
+            "cvssVector": "CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:C/C:H/I:H/A:N",
+            "cwe": "CWE-295 - Improper Certificate Validation",
+            "cweId": "CWE-295",
+            "cweName": "Improper Certificate Validation",
+            "cvssScore": 8.0,
+            "offensivePriority": "P3",
+            "offensivePriorityLabel": "Internal Network / Privileged Position",
+            "offensivePriorityReason": "Internal Network / Privileged Position | *internal-network position required*",
+            "confidence": 0.5,
+            "description": "#### Description\ngenerate-cert.sh runs from nginx's docker-entrypoint.d on every fresh container start (and only skips regeneration if a persisted volume already holds the cert). The cert's CN is 'localhost' and the SAN is 'DNS:localhost', so it cannot validate for any real hostname. There is no ACME hook, no external CA, and no operator warning before nginx binds :443. Combined with the threat model's insistence that this stack be modelled as production-exposed, the merchant origin has no cryptographically verifiable identity.\n\n#### Impact\nNginx terminates public TLS with a self-signed cert generated at boot with subject CN=localhost. Any real browser will present a warning users must click through, training them to accept unknown certificates, and no external verification of the merchant's identity is possible. In deployment scenarios described by the threat model (internet-exposed 8443), this defeats TLS's authentication guarantee entirely \u2014 an on-path attacker can substitute their own self-signed cert and the user experience is indistinguishable.\n\n#### Exploit scenario\nAn attacker on the same LAN (or upstream ISP hop) presents their own self-signed cert to a victim visiting https://shop:8443/. Because the legitimate cert is also unverifiable, users have been conditioned to click through the warning, and the attacker MITMs JWTs, credentials, and card data.\n\n#### Preconditions\n- Operator ships the stack as-built (no external cert termination in front of nginx)\n- Adjacent-network attacker or upstream ISP hop\n\n```\nopenssl req -x509 -nodes -newkey rsa:2048 \\\n  -keyout \"$KEY_FILE\" \\\n  -out \"$CERT_FILE\" \\\n  -days 365 \\\n  -subj \"/CN=localhost\" \\\n  -addext \"subjectAltName=DNS:localhost\"\n```\n\n#### How to fix\nDo not generate a self-signed cert as the default TLS material for a public listener. Require the operator to supply a real certificate (fail startup if /certs/cert.pem is missing) or integrate an ACME client. At minimum, use a distinct CN/SAN and print a startup warning that the cert is untrusted.\n\n**Exploitability:** Self-signed cert on merchant :443. Enables MITM only if attacker is on-path AND user click-throughs; chain enabler for F10/F16 capture in adversarial network positions.\n\n#### Adversarial verification\n**Verdict:** TRUE_POSITIVE (confidence: 7/10) \u2014 self-signed `CN=localhost` cert minted at nginx entrypoint is the sole identity of the 443 listener, no ACME/CA/operator gate exists, and Rule F blocks dismissing it on \"training-only\" grounds."
+          },
+          "taxa": [
+            {
+              "toolComponent": {
+                "name": "CWE",
+                "guid": "b7c8d9e0-1f2a-3b4c-5d6e-7f8090a1b2c3"
+              },
+              "id": "CWE-295"
+            }
+          ],
+          "rank": 80.0,
+          "partialFingerprints": {
+            "vvaFindingId/v1": "vvaf1_ce4f4ee6c9098b8feede7ac59324df72"
+          }
+        },
+        {
+          "ruleId": "CWE-1284",
+          "level": "warning",
+          "message": {
+            "text": "Unbounded pagination on staff orders endpoint enables bulk PII exfiltration  [CVSS 6.5: CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:N/A:N]"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "Node JS/api/src/routes/cs.js"
+                },
+                "region": {
+                  "startLine": 11
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "medium",
+            "security-severity": "6.5",
+            "cvssRating": "Medium",
+            "category": "CWE-1284",
+            "cvssVector": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:N/A:N",
+            "cwe": "CWE-1284",
+            "cweId": "CWE-1284",
+            "cvssScore": 6.5,
+            "offensivePriority": "P3",
+            "offensivePriorityLabel": "Internal Network / Privileged Position",
+            "offensivePriorityReason": "Internal Network / Privileged Position | *exposure unverified \u2014 no CMDB context; AV:N (network-routable; internet exposure unconfirmed)*",
+            "confidence": 0.9,
+            "description": "#### Description\nGET /cs/orders builds `db('orders').join('users', ...).select('orders.*', 'users.email as customer_email')`, optionally filters by an email substring via andWhereILike, and immediately awaits `query.orderBy('orders.created_at', 'desc')`. There is no `.limit()`, no `.offset()`, no server-imposed cap, and no page-size ceiling. A single call returns the complete orders table joined to users, streaming unbounded PII/order data to a CS session (or a JWT-forged session). The email query parameter also has no length/format validation and is passed straight into a `%...%` ILIKE, so an attacker can additionally supply `%` alone (matches all) or wildcard-heavy inputs and receive the full dataset.\n\n#### Impact\nAny authenticated user with the customer_service role (or an attacker who forges a JWT with role=customer_service \u2014 trivial given T1's committed default JWT_SECRET) can retrieve every order in the database, joined against users.email, in a single request. This is the primary bulk-egress path for the entire order/refund history and customer PII (email) asset.\n\n#### Exploit scenario\nAttacker holds any customer_service JWT (either legitimately, via role-escalation from T1's known JWT_SECRET, or through a compromised CS account) and issues `GET /api/cs/orders?email=%25` once. The API responds with every orders row joined to users.email \u2014 the full historical order corpus and every customer's email in one JSON blob \u2014 with no rate-limit against a bulk-read pattern. The attacker can dump the entire order history in one HTTP call, defeating any pagination-based monitoring.\n\n#### Preconditions\n- Caller possesses a JWT with role=customer_service (obtainable via T1 default secret, or a legitimate CS account)\n- No external WAF-level response-size cap\n\n```\nrouter.get('/orders', asyncHandler(async (req, res) => {\n  const { email } = req.query;\n  let query = db('orders').join('users', 'users.id', 'orders.user_id').select('orders.*', 'users.email as customer_email');\n  if (email) query = query.andWhereILike('users.email', `%${email}%`);\n  res.json(await query.orderBy('orders.created_at', 'desc'));\n}));\n```\n\n#### How to fix\nEnforce a server-side maximum page size (e.g., `.limit(Math.min(Number(req.query.limit) || 50, 200)).offset(...)`) on cs.js:15 before executing the query, and require pagination cursors on any join that emits users.email. Also validate `email` (length \u2264 254, disallow `%`/`_` or escape LIKE metacharacters) before passing to `andWhereILike` on line 14.\n\n**Exploitability:** Post-auth (CS role) unbounded pagination; trivially reached post-F1 JWT forgery. Confidentiality:H \u2014 full orders\u00d7users PII dump in one call. Ideal sink for chain from F1.\n\n#### Adversarial verification\n**Verdict:** TRUE_POSITIVE (confidence: 9/10) \u2014 unbounded, unfiltered orders+email dump reachable by any customer_service token; no pagination, no mandatory scoping predicate, no upstream cap."
+          },
+          "taxa": [
+            {
+              "toolComponent": {
+                "name": "CWE",
+                "guid": "b7c8d9e0-1f2a-3b4c-5d6e-7f8090a1b2c3"
+              },
+              "id": "CWE-1284"
+            }
+          ],
+          "rank": 65.0,
+          "partialFingerprints": {
+            "vvaFindingId/v1": "vvaf1_f7e5306738c89c85a65e7d1f75b5c58d"
+          }
+        },
+        {
+          "ruleId": "CWE-290",
+          "level": "warning",
+          "message": {
+            "text": "Rate-limit key spoofable via unvalidated X-Forwarded-For  [CVSS 6.5: CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:N]"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "Node JS/api/src/middleware/rateLimit.js"
+                },
+                "region": {
+                  "startLine": 4
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "medium",
+            "security-severity": "6.5",
+            "cvssRating": "Medium",
+            "category": "CWE-290",
+            "cvssVector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:N",
+            "cwe": "CWE-290",
+            "cweId": "CWE-290",
+            "cvssScore": 6.5,
+            "offensivePriority": "P3",
+            "offensivePriorityLabel": "Internal Network / Privileged Position",
+            "offensivePriorityReason": "Internal Network / Privileged Position | *exposure unverified \u2014 no CMDB context; AV:N (network-routable; internet exposure unconfirmed)*",
+            "confidence": 0.9,
+            "description": "#### Description\nclientIp() unconditionally trusts the first value of the X-Forwarded-For request header as the client identity, with no verification that the header came from the trusted upstream (nginx). Because Express is never configured with app.set('trust proxy', ...) and the API listener is bound to a container port that any caller who reaches it can send arbitrary headers to, an attacker who reaches the api process (directly or via the nginx proxy that forwards X-Forwarded-For through) can inject any address they like. Nginx does not strip the client-supplied X-Forwarded-For before appending its own; only the first comma-separated element is used, so an attacker sending `X-Forwarded-For: 1.2.3.<n>` gets a fresh rate-limit bucket per request. The credentialLimiter (routes/auth.js) then never triggers, and every bcrypt.compare attempt on /login succeeds through to the password hash check.\n\n#### Impact\nAn unauthenticated attacker can bypass the in-process credentialLimiter that protects /api/auth/login and /api/auth/register by rotating the X-Forwarded-For header value on each request. This defeats the primary application-layer control against credential stuffing and account brute-force against the bcrypt password store.\n\n#### Exploit scenario\nAttacker scripts POST /api/auth/login with `X-Forwarded-For: 10.0.0.<i>` where i increments each request. Each request lands in a distinct hits Map bucket, so entry.count stays at 1 and the 429 branch is never hit. The attacker can now brute-force passwords or run credential-stuffing at the network's full throughput, gated only by nginx's 10r/m zone (which is itself per source IP and can be defeated by rotating source addresses through commodity proxies).\n\n#### Preconditions\n- Attacker can reach /api/auth/login through the merchant nginx (public endpoint)\n- nginx forwards X-Forwarded-For to the api container (default proxy behavior)\n\n```\nfunction clientIp(req) {\n  const forwarded = req.headers['x-forwarded-for'];\n  if (forwarded) {\n    return String(forwarded).split(',')[0].trim();\n  }\n  return req.socket.remoteAddress || 'unknown';\n}\n```\n\n#### How to fix\nDo not read X-Forwarded-For directly from the request; call app.set('trust proxy', <hop count or specific CIDR>) once and use req.ip so Express strips untrusted values, or hard-code the key to req.socket.remoteAddress when the app knows it sits behind a single reverse proxy. Combine with an account-scoped counter (email or user id) so a distributed attack against one account is also throttled.\n\n**Exploitability:** Pre-auth rate-limit key spoof via X-Forwarded-For. Nullifies credentialLimiter, feeding brute-force against F21 (timing enumeration) and F11 (existence oracle) to enumerate then crack accounts unhindered.\n\n#### Adversarial verification\n**Verdict:** TRUE_POSITIVE (confidence: 9/10) \u2014 XFF is untrusted, nginx forwards the client-supplied header, and rotating XFF yields a fresh bucket per request, defeating the auth rate limit."
+          },
+          "taxa": [
+            {
+              "toolComponent": {
+                "name": "CWE",
+                "guid": "b7c8d9e0-1f2a-3b4c-5d6e-7f8090a1b2c3"
+              },
+              "id": "CWE-290"
+            }
+          ],
+          "rank": 65.0,
+          "partialFingerprints": {
+            "vvaFindingId/v1": "vvaf1_bcf2c6492a6d2cada652399f2e05f16e"
+          }
+        },
+        {
+          "ruleId": "CWE-693: Protection Mechanism Failure",
+          "level": "warning",
+          "message": {
+            "text": "Missing security response headers (HSTS/CSP/XFO/XCTO)  [CVSS 4.2: CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:U/C:L/I:L/A:N]"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "Node JS/web/nginx.conf"
+                },
+                "region": {
+                  "startLine": 28
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "medium",
+            "security-severity": "4.2",
+            "cvssRating": "Medium",
+            "category": "CWE-693: Protection Mechanism Failure",
+            "cvssVector": "CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:U/C:L/I:L/A:N",
+            "cwe": "CWE-693 - Protection Mechanism Failure",
+            "cweId": "CWE-693",
+            "cweName": "Protection Mechanism Failure",
+            "cvssScore": 4.2,
+            "offensivePriority": "P3",
+            "offensivePriorityLabel": "Internal Network / Privileged Position",
+            "offensivePriorityReason": "Internal Network / Privileged Position | *internal-network position required*",
+            "confidence": 0.9,
+            "description": "#### Description\nThe server block at nginx.conf L28\u2013L109 configures TLS, rate-limits, proxy_pass rules, and try_files, but never issues an `add_header` for `Strict-Transport-Security`, `Content-Security-Policy`, `X-Frame-Options`, `X-Content-Type-Options`, or `Referrer-Policy`. The API layer (api/src/app.js L14\u2013L37) also installs no helmet/equivalent middleware and only mounts `cors()`, `express.json()`, `cookieParser()`. Combined with the design that stores the access token in browser storage (script-accessible), the absence of a CSP means script injection anywhere in the SPA \u2014 including third-party content, dev-tooled snippets, or an admin review-body render \u2014 reads the JWT and posts it to an attacker origin; absence of X-Frame-Options allows framing the app for clickjacking on state-changing admin forms (Admin.jsx updatePrice, role changes); absence of HSTS allows a first-visit downgrade to plaintext HTTP where the 301-only :80 vhost is trivially MITM-able (the redirect happens BEFORE the browser has an HSTS pin).\n\n#### Impact\nThe edge proxy emits no HSTS, CSP, X-Frame-Options, X-Content-Type-Options, or Referrer-Policy headers. Because the SPA persists the HS256 access JWT in localStorage (see AuthContext usage), any reflected/stored XSS in the SPA \u2014 or a malicious iframe embedding it \u2014 is silently upgraded to full session theft against every logged-in user, and downgrade attacks against the TLS listener are unmitigated after first-visit.\n\n#### Exploit scenario\n1) A user visits https://shop over a hostile Wi-Fi network for the first time; the attacker MITMs the initial http://shop navigation and never issues the 301, capturing subsequent credentials/JWTs (no HSTS pin exists to block this). 2) Alternatively, any stored XSS vector (e.g., a review body rendered without escaping) exfiltrates `localStorage['token']` to `https://evil/`, and \u2014 with no CSP `connect-src` allowlist \u2014 the browser permits the outbound POST. The attacker then makes authenticated API calls for 12h (access-token TTL).\n\n#### Preconditions\n- Any XSS sink in the SPA OR one-time MITM opportunity on the victim's first visit\n- SPA continues to hold the access JWT in a script-accessible store\n\n```\nserver {\n    listen 443 ssl;\n    server_name _;\n    root /usr/share/nginx/html;\n    ...\n    ssl_certificate     /certs/cert.pem;\n    ssl_certificate_key /certs/key.pem;\n    ssl_protocols       TLSv1.2;\n    # <-- no add_header Strict-Transport-Security / CSP / X-Frame-Options / X-Content-Type-Options\n    ...\n    location / {\n        limit_req zone=static burst=80 nodelay;\n        try_files $uri /index.html;\n    }\n}\n```\n\n#### How to fix\nIn the 443 server block add: `add_header Strict-Transport-Security \"max-age=31536000; includeSubDomains\" always;`, `add_header X-Content-Type-Options nosniff always;`, `add_header X-Frame-Options DENY always;`, `add_header Referrer-Policy no-referrer always;`, and a `Content-Security-Policy` restricted to `'self'` with an explicit `connect-src` for the API/FauxPay origins. Also install `helmet()` in api/src/app.js right after `const app = express();` to apply the same defaults if nginx is ever bypassed.\n\n**Exploitability:** No HSTS/CSP/XFO/XCTO. Enables downgrade capture of F10 refresh cookie, clickjacking of admin mutations, and XSS\u2192JWT theft from localStorage. Chain amplifier rather than standalone RCE.\n\n#### Adversarial verification\n**Verdict:** TRUE_POSITIVE (confidence: 8/10) \u2014 nginx.conf L28-L109 is verified to omit HSTS, CSP, XFO, XCTO, and Referrer-Policy; api/src/app.js has no helmet. Scanner's localStorage claim is wrong (token is in-memory, refresh is httpOnly cookie), but the header gap still enables first-visit HSTS-downgrade MITM, clickjacking on admin state-changing routes, and amplifies any XSS via the httpOnly refresh cookie \u2014 impact is limited but real, not hypothetical."
+          },
+          "taxa": [
+            {
+              "toolComponent": {
+                "name": "CWE",
+                "guid": "b7c8d9e0-1f2a-3b4c-5d6e-7f8090a1b2c3"
+              },
+              "id": "CWE-693"
+            }
+          ],
+          "rank": 42.0,
+          "partialFingerprints": {
+            "vvaFindingId/v1": "vvaf1_d3e5a55ac101943ecd961290633ac012"
+          }
+        },
+        {
+          "ruleId": "CWE-319: Cleartext Transmission of Sensitive Information",
+          "level": "warning",
+          "message": {
+            "text": "Raw PAN/CVV posted through merchant origin  [CVSS 6.1: CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:C/C:H/I:N/A:N]"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "Node JS/web/src/api/client.js"
+                },
+                "region": {
+                  "startLine": 152
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "medium",
+            "security-severity": "6.1",
+            "cvssRating": "Medium",
+            "category": "CWE-319: Cleartext Transmission of Sensitive Information",
+            "cvssVector": "CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:C/C:H/I:N/A:N",
+            "cwe": "CWE-319 - Cleartext Transmission of Sensitive Information",
+            "cweId": "CWE-319",
+            "cweName": "Cleartext Transmission of Sensitive Information",
+            "cvssScore": 6.1,
+            "offensivePriority": "P3",
+            "offensivePriorityLabel": "Internal Network / Privileged Position",
+            "offensivePriorityReason": "Internal Network / Privileged Position | *exposure unverified \u2014 no CMDB context; AV:N (network-routable; internet exposure unconfirmed)*",
+            "confidence": 0.85,
+            "description": "#### Description\nThe SPA collects PAN and CVV in plain form fields (Checkout.jsx:108-133) and calls `tokenizeCard(card)` which stringifies them and POSTs to /fauxpay/tokenize. The comment on lines 147-151 explicitly notes that in production this must be replaced by a processor-hosted iframe so 'Our origin never sees the PAN' \u2014 the shipped code violates that invariant. Because nginx logs request lines and (with typical debug configs) request bodies, and because /fauxpay/ shares the merchant origin, any operator log-aggregation pipeline harvests full card data.\n\n#### Impact\n`tokenizeCard()` posts the full card_number, exp_month/year, and CVV from the browser to `${FAUXPAY_BASE_URL}/tokenize`, which per the deployed nginx.conf resolves to `/fauxpay/tokenize` on the merchant domain. All cardholder data traverses merchant infrastructure (nginx TLS-terminates and proxies), which places merchant nginx logs, error handlers, and any adjacent workload inside PCI-DSS scope and exposes CVV/PAN to nginx `access_log` or any accidental body logging.\n\n#### Exploit scenario\nA JavaScript XSS on any merchant page reads window.fetch responses on same-origin /fauxpay/tokenize before submission, or an operator with read access to nginx access_log/error_log recovers PAN+CVV pairs from body-logging or accidental error dumps. Either yields raw usable card data because tokenization happens on-domain rather than out-of-scope on the processor.\n\n#### Preconditions\n- SPA served through the merchant nginx (as shipped)\n- Card details entered by a real customer\n\n```\nexport async function tokenizeCard({ card_number, exp_month, exp_year, cvv }) {\n  const res = await fetch(`${FAUXPAY_BASE_URL}/tokenize`, {\n    method: 'POST',\n    headers: { 'Content-Type': 'application/json' },\n    body: JSON.stringify({ card_number, exp_month, exp_year, cvv }),\n  });\n```\n\n#### How to fix\nDo not accept PAN or CVV at the merchant origin. Replace `tokenizeCard` with a hosted-fields / iframe integration served from the processor's domain so cardholder data never crosses merchant infrastructure. Remove the /fauxpay/ location from web/nginx.conf.\n\n**Exploitability:** Raw PAN/CVV traverses merchant origin. PCI-scope-expanding leak; combined with F8 processor-error echo, becomes a card-testing oracle. UI:R lowers score but harvesting via nginx logs is passive.\n\n#### Adversarial verification\n**Verdict:** TRUE_POSITIVE (confidence: 8/10) \u2014 PAN/CVV verifiably traverse the merchant origin via same-origin tokenize POST; any merchant-origin XSS captures raw card data, and the design violates the invariant the code itself documents."
+          },
+          "taxa": [
+            {
+              "toolComponent": {
+                "name": "CWE",
+                "guid": "b7c8d9e0-1f2a-3b4c-5d6e-7f8090a1b2c3"
+              },
+              "id": "CWE-319"
+            }
+          ],
+          "rank": 61.0,
+          "partialFingerprints": {
+            "vvaFindingId/v1": "vvaf1_1b6525b40acf3f6214d8d965400ca1e6"
+          }
+        },
+        {
+          "ruleId": "CWE-840: Business Logic Errors",
+          "level": "warning",
+          "message": {
+            "text": "Stock decremented pre-charge, never restored on payment failure  [CVSS 5.4: CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:N/I:L/A:L]"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "Node JS/api/src/routes/orders.js"
+                },
+                "region": {
+                  "startLine": 61
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "medium",
+            "security-severity": "5.4",
+            "cvssRating": "Medium",
+            "category": "CWE-840: Business Logic Errors",
+            "cvssVector": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:N/I:L/A:L",
+            "cwe": "CWE-840 - Business Logic Errors",
+            "cweId": "CWE-840",
+            "cweName": "Business Logic Errors",
+            "cvssScore": 5.4,
+            "offensivePriority": "P3",
+            "offensivePriorityLabel": "Internal Network / Privileged Position",
+            "offensivePriorityReason": "Internal Network / Privileged Position | *exposure unverified \u2014 no CMDB context; AV:N (network-routable; internet exposure unconfirmed)*",
+            "confidence": 0.95,
+            "description": "#### Description\nThe checkout handler runs a knex transaction that both creates the order and decrements widgets.stock_quantity (lines 47-66). Only AFTER the transaction commits does it call fauxpay.charge (line 70). If the charge throws (network error, insufficient funds, processor 4xx/5xx) the catch block on line 71-74 only updates the order's status to 'cancelled' \u2014 it never re-increments widgets.stock_quantity for the line items. An attacker with a valid card_token that reliably declines (or by pointing at an unreachable processor) can loop this endpoint to drain stock without ever paying, since server-side stock is deducted before payment is authorized.\n\n#### Impact\nAny authenticated customer can permanently zero out inventory of any active widget by submitting checkouts whose payments fail. The order is marked 'cancelled' but the widget stock_quantity is not incremented back, enabling a low-cost denial-of-inventory attack against the entire catalog (competitor sabotage, self-DoS).\n\n#### Exploit scenario\nAttacker registers an account, adds N units of a widget to their cart, obtains any card_token that will decline (or exhausts their card so /charge returns a 4xx), and POSTs /api/orders. The transaction decrements widgets.stock_quantity by N; charge fails; order is cancelled but stock stays deducted. Repeat until stock_quantity is 0, making the widget appear out-of-stock to all real customers.\n\n#### Preconditions\n- Valid customer JWT (self-registration is open)\n- Ability to cause fauxpay.charge to reject (declining test tokens or provoking any 4xx/5xx)\n\n```\nfor (const li of lineItems) {\n  await trx('widgets').where({ id: li.widget_id }).decrement('stock_quantity', li.quantity);\n}\n...\n} catch (err) {\n  await db('orders').where({ id: order.id }).update({ status: 'cancelled' });\n  return res.status(payErrorStatus(err)).json({ error: 'Payment failed', detail: err.data?.error });\n}\n```\n\n#### How to fix\nEither (a) authorize the charge BEFORE decrementing stock and only decrement inside the same transaction as marking the payment captured, or (b) in the catch block at line 71-74, restore stock by iterating line items and calling `.increment('stock_quantity', li.quantity)` within a compensating transaction before returning the error. Also delete/void the created order_items on rollback.\n\n**Exploitability:** Post-auth stock drain via failed charge loop. Combined with F4 (race) and F22 (price race) forms an inventory-integrity primitive; competitor-DoS and free-goods logic feasible.\n\n#### Adversarial verification\n**Verdict:** TRUE_POSITIVE (confidence: 9/10) \u2014 stock decrement commits before payment; catch path never restores it, and self-registration + attacker-chosen declining card_token make looping trivial."
+          },
+          "taxa": [
+            {
+              "toolComponent": {
+                "name": "CWE",
+                "guid": "b7c8d9e0-1f2a-3b4c-5d6e-7f8090a1b2c3"
+              },
+              "id": "CWE-840"
+            }
+          ],
+          "rank": 54.0,
+          "partialFingerprints": {
+            "vvaFindingId/v1": "vvaf1_515ceca67a05f9be437a864e02ac8076"
+          }
+        },
+        {
+          "ruleId": "CWE-287: Improper Authentication",
+          "level": "warning",
+          "message": {
+            "text": "No email verification enables account pre-hijacking  [CVSS 6.5: CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:N]"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "Node JS/api/src/routes/auth.js"
+                },
+                "region": {
+                  "startLine": 31
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "medium",
+            "security-severity": "6.5",
+            "cvssRating": "Medium",
+            "category": "CWE-287: Improper Authentication",
+            "cvssVector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:N",
+            "cwe": "CWE-287 - Improper Authentication",
+            "cweId": "CWE-287",
+            "cweName": "Improper Authentication",
+            "cvssScore": 6.5,
+            "offensivePriority": "P3",
+            "offensivePriorityLabel": "Internal Network / Privileged Position",
+            "offensivePriorityReason": "Internal Network / Privileged Position | *exposure unverified \u2014 no CMDB context; AV:N (network-routable; internet exposure unconfirmed)*",
+            "confidence": 0.85,
+            "description": "#### Description\nPOST /api/auth/register at auth.js:31 accepts arbitrary email/password/full_name from the request body, inserts the user with role='customer', and immediately issues an access token plus a refresh cookie (issueSession, line 53). There is no email format validation, no case/normalization step, no confirmation-token issuance, and no 'unverified' state on the user row. The pre-existence check at line 40-43 unconditionally responds 409 when the email exists, which both (a) confirms account existence to any anonymous caller (enumeration) and (b) permanently blocks the true owner from registering after an attacker has squatted their address. There is also no password-reset / recovery flow visible in the auth router, so once an email is squatted the legitimate owner has no recovery path and remains locked out. When a victim later realises and tries to register, they get 'account already exists' and cannot dislodge the attacker; if any future feature (SSO merge, password reset via email) is added it would inherit an attacker-controlled shadow account.\n\n#### Impact\nAn unauthenticated attacker can register an account using a victim's email address before the victim signs up. Because there is no proof-of-ownership step (no verification email, no confirmation link), the account is immediately usable and prevents the legitimate owner from ever registering that email themselves. Combined with the 409 leak, this also enables bulk user enumeration.\n\n#### Exploit scenario\nAttacker calls POST /api/auth/register with {email:'victim@corp.example', password:'[REDACTED-SECRET]', full_name:'V'} \u2014 201 with token. Victim later tries to register the same address and receives 409 'An account with that email already exists'; they cannot reclaim it and have no recovery endpoint. Meanwhile the attacker holds a valid session bound to the victim's email, receives any future correspondence delivered by email address, and can be silently upgraded to whatever downstream identity ties to that email (e.g., support contacting via the address on file, or a future merge flow).\n\n#### Preconditions\n- Attacker knows or guesses target's email address (or iterates a list)\n- Registration endpoint is publicly reachable (default via nginx /api/)\n\n```\nrouter.post('/register', credentialLimiter, asyncHandler(async (req, res) => {\n  const { email, password, full_name } = req.body || {};\n  ...\n  const existing = await db('users').where({ email }).first();\n  if (existing) {\n    return res.status(409).json({ error: 'An account with that email already exists' });\n  }\n  const password_hash = await bcrypt.hash(password, 10);\n  const [row] = await db('users').insert({ email, password_hash, full_name, role: 'customer' }).returning(...);\n  ...\n  const token = await issueSession(res, user);\n  res.status(201).json({ token, user });\n}));\n```\n\n#### How to fix\nEnforce proof-of-ownership before the account is usable: on register, create the row in an 'unverified' state, send a signed one-time verification link to the supplied address, and refuse login/session issuance until the link is consumed. Return a uniform 202 response regardless of whether the email already exists (eliminating the 409 enumeration oracle at auth.js:41-43). Normalize email to lower-case before the existence check and unique index. Add a password-reset flow that invalidates existing sessions so a squatted account can be reclaimed by proving mailbox control.\n\n**Exploitability:** Pre-auth account pre-hijacking; no email verification, no recovery. Chains with F11 enumeration to systematically squat known victim addresses.\n\n#### Adversarial verification\n**Verdict:** TRUE_POSITIVE (confidence: 9/10) \u2014 public /api/auth/register issues a full session with no email verification, no recovery path, and confirms existing emails via 409, giving anonymous attackers both enumeration and pre-hijack of arbitrary addresses."
+          },
+          "taxa": [
+            {
+              "toolComponent": {
+                "name": "CWE",
+                "guid": "b7c8d9e0-1f2a-3b4c-5d6e-7f8090a1b2c3"
+              },
+              "id": "CWE-287"
+            }
+          ],
+          "rank": 65.0,
+          "partialFingerprints": {
+            "vvaFindingId/v1": "vvaf1_3e8e314545cbd79bb4a80c75f53b811f"
+          }
+        },
+        {
+          "ruleId": "CWE-204",
+          "level": "warning",
+          "message": {
+            "text": "User enumeration via registration response  [CVSS 5.3: CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N]"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "Node JS/api/src/routes/auth.js"
+                },
+                "region": {
+                  "startLine": 40
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "medium",
+            "security-severity": "5.3",
+            "cvssRating": "Medium",
+            "category": "CWE-204",
+            "cvssVector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N",
+            "cwe": "CWE-204",
+            "cweId": "CWE-204",
+            "cvssScore": 5.3,
+            "offensivePriority": "P3",
+            "offensivePriorityLabel": "Internal Network / Privileged Position",
+            "offensivePriorityReason": "Internal Network / Privileged Position | *exposure unverified \u2014 no CMDB context; AV:N (network-routable; internet exposure unconfirmed)*",
+            "confidence": 0.95,
+            "description": "#### Description\nPOST /api/auth/register queries the users table for the submitted email and, if a row exists, returns a 409 with a message that unambiguously discloses account presence. There is no rate-limiter tuned for enumeration on this response class (the same credentialLimiter allows many small POSTs), and no delay/normalized response between the exists/does-not-exist branches. Untrusted input (req.body.email) reaches the disclosing sink at line 42.\n\n#### Impact\nAn unauthenticated attacker can enumerate valid customer/admin email addresses by attempting to register each candidate address. The endpoint returns HTTP 409 with an explicit 'An account with that email already exists' message when the address is registered, and HTTP 201 otherwise. Confirmed email lists then feed credential stuffing, password reset abuse, and phishing.\n\n#### Exploit scenario\nAttacker scripts POST /api/auth/register with each email from a target list and a random password. Every 409 confirms the address is registered on the site; every 201 is either a new signup they can immediately delete or ignore. In minutes they harvest a validated customer list to use in credential stuffing against /api/auth/login (where a valid email produces bcrypt-length responses).\n\n#### Preconditions\n- Attacker can reach /api/auth/register (default public endpoint)\n\n```\nconst existing = await db('users').where({ email }).first();\nif (existing) {\n  return res.status(409).json({ error: 'An account with that email already exists' });\n}\n```\n\n#### How to fix\nReturn an identical 202/'confirmation email sent' response for both branches and finalize registration only after email verification, or throttle 409 responses per source aggressively. Change the branch at api/src/routes/auth.js:41-43 to not distinguish the existing-account case in the wire response.\n\n**Exploitability:** Pre-auth enumeration via 409 branch. Feeds F13-defeated brute force and F17 password reuse checks. Standalone confidentiality only.\n\n#### Adversarial verification\n**Verdict:** TRUE_POSITIVE (confidence: 9/10) \u2014 public /register returns a distinct 409 on existing emails with only a per-IP 10/15min limiter, enabling account enumeration"
+          },
+          "taxa": [
+            {
+              "toolComponent": {
+                "name": "CWE",
+                "guid": "b7c8d9e0-1f2a-3b4c-5d6e-7f8090a1b2c3"
+              },
+              "id": "CWE-204"
+            }
+          ],
+          "rank": 53.0,
+          "partialFingerprints": {
+            "vvaFindingId/v1": "vvaf1_27b7d53bcd81178f3f2f9ed0e24da8de"
+          }
+        },
+        {
+          "ruleId": "CWE-208",
+          "level": "warning",
+          "message": {
+            "text": "Username enumeration via bcrypt timing skip on missing user  [CVSS 5.3: CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N]"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "Node JS/api/src/routes/auth.js"
+                },
+                "region": {
+                  "startLine": 57
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "medium",
+            "security-severity": "5.3",
+            "cvssRating": "Medium",
+            "category": "CWE-208",
+            "cvssVector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N",
+            "cwe": "CWE-208",
+            "cweId": "CWE-208",
+            "cvssScore": 5.3,
+            "offensivePriority": "P3",
+            "offensivePriorityLabel": "Internal Network / Privileged Position",
+            "offensivePriorityReason": "Internal Network / Privileged Position | *exposure unverified \u2014 no CMDB context; AV:N (network-routable; internet exposure unconfirmed)*",
+            "confidence": 0.85,
+            "description": "#### Description\nThe condition `if (!user || !(await bcrypt.compare(password, user.password_hash)))` short-circuits when `user` is undefined, so no bcrypt work is performed. bcrypt with cost 10 (line 45) takes 50-100 ms on typical hardware, giving a large, reliably-measurable timing gap between the two branches.\n\n#### Impact\nAn attacker learns which email addresses have accounts by measuring response latency of POST /api/auth/login. Requests for non-existent users skip bcrypt.compare entirely and return in a few milliseconds; requests for existing users incur ~50-100 ms of bcrypt work. This produces a directory of valid emails for phishing or targeted credential-stuffing.\n\n#### Exploit scenario\nAttacker scripts POST /api/auth/login with each candidate email and a fixed dummy password; requests taking <10 ms indicate 'no such user' while requests taking >40 ms indicate the account exists. Combined with the XFF rate-limit bypass finding, enumeration of an arbitrary email list is trivial.\n\n#### Preconditions\n- Reachable /api/auth/login (public)\n\n```\nconst user = await db('users').where({ email }).first();\nif (!user || !(await bcrypt.compare(password, user.password_hash))) {\n  return res.status(401).json({ error: 'Invalid email or password' });\n}\n```\n\n#### How to fix\nCompute a dummy bcrypt.compare against a fixed valid hash whenever `user` is not found so both branches perform the same work, then return the same 401. Alternatively normalize the response with a fixed delay above the worst-case bcrypt time.\n\n**Exploitability:** Bcrypt timing enumeration. Redundant with F11 but harder to alert on; chains identically into the F13-bypassed brute force pipeline.\n\n#### Adversarial verification\n**Verdict:** TRUE_POSITIVE (confidence: 9/10) \u2014 public login route short-circuits bcrypt on missing user, producing a large, reliably measurable timing oracle; the co-located XFF-trusting rate limiter is trivially bypassable, so enumeration scales."
+          },
+          "taxa": [
+            {
+              "toolComponent": {
+                "name": "CWE",
+                "guid": "b7c8d9e0-1f2a-3b4c-5d6e-7f8090a1b2c3"
+              },
+              "id": "CWE-208"
+            }
+          ],
+          "rank": 53.0,
+          "partialFingerprints": {
+            "vvaFindingId/v1": "vvaf1_ef571579e759edf22160595a24d3da9a"
+          }
+        },
+        {
+          "ruleId": "CWE-799",
+          "level": "warning",
+          "message": {
+            "text": "Missing Idempotency-Key on charge/refund enables double-charge on retry  [CVSS 5.3: CVSS:3.1/AV:N/AC:H/PR:L/UI:N/S:U/C:N/I:H/A:N]"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "Node JS/api/src/services/fauxpayClient.js"
+                },
+                "region": {
+                  "startLine": 4
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "medium",
+            "security-severity": "5.3",
+            "cvssRating": "Medium",
+            "category": "CWE-799",
+            "cvssVector": "CVSS:3.1/AV:N/AC:H/PR:L/UI:N/S:U/C:N/I:H/A:N",
+            "cwe": "CWE-799",
+            "cweId": "CWE-799",
+            "cvssScore": 5.3,
+            "offensivePriority": "P3",
+            "offensivePriorityLabel": "Internal Network / Privileged Position",
+            "offensivePriorityReason": "Internal Network / Privileged Position | *exposure unverified \u2014 no CMDB context; AV:N (network-routable; internet exposure unconfirmed)*",
+            "confidence": 0.8,
+            "description": "*1 additional call site(s) collapsed during dedup \u2014 same root cause; each location needs the same fix applied.*\n\n#### Description\nfauxpayClient.post issues POSTs to /charge and /refund with no Idempotency-Key header (lines 5-12). orders.js:70 awaits charge inside an HTTP handler with no request-level deduplication. If the network drops after the processor debits the card but before the response returns, the caller sees an error, cancels the order (leaving stock over-decremented, per finding above), and the customer's card is charged with no order fulfilled. On the refund path in cs.js, a retried refund request will refund twice.\n\n#### Impact\nAny transient network hiccup or client retry can cause the same order to be charged twice (or refunded twice), because no Idempotency-Key header is sent and the processor cannot de-duplicate. Customers see duplicate captures on their card; refunds triggered by CS may double-refund. Combined with the lack of a payments-unique constraint on order_id, orders can accumulate multiple 'captured' payment rows.\n\n#### Exploit scenario\nA user clicks 'Place order' twice quickly (or their browser retries on a slow response). Both POSTs reach /api/orders concurrently. Each calls fauxpayClient.charge; both /charge requests reach fauxpay and both succeed with distinct transaction_ids. The customer is billed twice for one intended order.\n\n#### Preconditions\n- Authenticated customer or CS user\n- Retry / duplicate submission (natural network conditions or intentional double-click)\n\n```\nasync function post(path, body) {\n  const res = await fetch(`${FAUXPAY_BASE_URL}${path}`, {\n    method: 'POST',\n    headers: {\n      'Content-Type': 'application/json',\n      Authorization: `Bearer ${FAUXPAY_API_KEY}`,\n    },\n    body: JSON.stringify(body),\n  });\n```\n\n#### How to fix\nGenerate a deterministic Idempotency-Key per logical operation (e.g., `order:<id>:charge`, `refund:<order_id>:<amount>:<sequence>`) and pass it as an `Idempotency-Key` header from fauxpayClient. Have the FauxPay service store and return the original response for repeats within a TTL. Add a unique constraint on payments(order_id, status='captured') to prevent duplicate captured rows.\n\n**Exploitability:** Missing Idempotency-Key \u2192 double-charge/double-refund on retry. Combined with F5+F23 an attacker can weaponize retries to multiply refunds through the exposed /refund.\n\n#### Adversarial verification\n**Verdict:** TRUE_POSITIVE (confidence: 9/10) \u2014 No Idempotency-Key on outbound /charge or /refund and no server-side request dedup; a retried/double-submitted checkout produces two real card charges, and a retried refund produces two real refunds.",
+            "dedupRelatedLocationCount": 1
+          },
+          "taxa": [
+            {
+              "toolComponent": {
+                "name": "CWE",
+                "guid": "b7c8d9e0-1f2a-3b4c-5d6e-7f8090a1b2c3"
+              },
+              "id": "CWE-799"
+            }
+          ],
+          "relatedLocations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "Node JS/api/src/routes/orders.js"
+                },
+                "region": {
+                  "startLine": 68,
+                  "endLine": 89
+                }
+              },
+              "message": {
+                "text": "Additional call site \u2014 collapsed during dedup; same root cause as the primary location and needs the same fix."
+              }
+            }
+          ],
+          "rank": 53.0,
+          "partialFingerprints": {
+            "vvaFindingId/v1": "vvaf1_ca6df073004e7f83abba13c97183948f"
+          }
+        },
+        {
+          "ruleId": "CWE-614",
+          "level": "warning",
+          "message": {
+            "text": "Refresh cookie Secure flag conditional on NODE_ENV  [CVSS 6.8: CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:U/C:H/I:H/A:N]"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "Node JS/api/src/services/tokens.js"
+                },
+                "region": {
+                  "startLine": 49
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "medium",
+            "security-severity": "6.8",
+            "cvssRating": "Medium",
+            "category": "CWE-614",
+            "cvssVector": "CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:U/C:H/I:H/A:N",
+            "cwe": "CWE-614",
+            "cweId": "CWE-614",
+            "cvssScore": 6.8,
+            "offensivePriority": "P3",
+            "offensivePriorityLabel": "Internal Network / Privileged Position",
+            "offensivePriorityReason": "Internal Network / Privileged Position | *exposure unverified \u2014 no CMDB context; AV:N (network-routable; internet exposure unconfirmed)*",
+            "confidence": 0.75,
+            "description": "#### Description\n`setRefreshCookie` sets `secure: process.env.NODE_ENV === 'production'`. The api container in the training docker-compose does not set NODE_ENV=production, so the cookie is created without the Secure attribute. nginx does redirect :80 \u2192 :443 via HTTP 301, but the browser attaches the (non-Secure) refresh cookie to the initial HTTP request before it sees the redirect, meaning the token is exposed on the wire. Because refresh tokens carry 7-day validity and mint fresh 12-hour access JWTs, capture is high-value. This matches the T28 threat that the training defaults become production defaults.\n\n#### Impact\nThe refresh_token cookie (7-day, unrotated until used) is emitted without the `Secure` attribute whenever `NODE_ENV !== 'production'` \u2014 the default in the shipped docker-compose training stack. Any browser request from the same site to plain http://<host>/api/auth/... (e.g., a user typing the URL, a mixed-content resource, or a network-adjacent attacker forcing a plaintext navigation) will transmit the cookie in cleartext before the :80\u2192:443 redirect fires, letting a passive on-path attacker steal a long-lived refresh token and mint fresh access JWTs for 7 days.\n\n#### Exploit scenario\nA user on hostile Wi-Fi has an authenticated session. The attacker triggers any plain http://shop/api/auth/refresh navigation (e.g., an <img> tag in an unrelated site, an HTTP-only captive-portal probe, or DNS/ARP poisoning to force one plaintext request). The browser attaches the refresh cookie because it lacks the Secure attribute. The attacker captures it, calls /api/auth/refresh with it, and obtains a live access JWT plus a fresh 7-day refresh cookie, effectively hijacking the session indefinitely.\n\n#### Preconditions\n- Deployment leaves NODE_ENV unset or non-'production' (the shipped compose default)\n- Any single plaintext HTTP request to /api/auth path during the session\n\n```\nfunction setRefreshCookie(res, token) {\n  res.cookie(REFRESH_COOKIE, token, {\n    httpOnly: true,\n    sameSite: 'lax',\n    secure: process.env.NODE_ENV === 'production',\n    path: REFRESH_COOKIE_PATH,\n    maxAge: REFRESH_TOKEN_TTL_MS,\n  });\n}\n```\n\n#### How to fix\nAlways set `secure: true` on the refresh cookie in tokens.js:56 (or set it based on request protocol, not NODE_ENV) and refuse to boot if NODE_ENV is not 'production'. Additionally, in nginx.conf, add `Strict-Transport-Security` so browsers refuse the initial HTTP request outright.\n\n**Exploitability:** Non-Secure refresh cookie in non-production NODE_ENV. Chains with F9 (no HSTS) for first-visit downgrade capture and then F12 to bypass replay detection.\n\n#### Adversarial verification\n**Verdict:** TRUE_POSITIVE (confidence: 7/10) \u2014 cookie ships without Secure under shipped compose; MITM on hostile Wi-Fi can force a top-level nav to /api/auth path and capture the plaintext refresh token, enabling indefinite session hijack via rotation."
+          },
+          "taxa": [
+            {
+              "toolComponent": {
+                "name": "CWE",
+                "guid": "b7c8d9e0-1f2a-3b4c-5d6e-7f8090a1b2c3"
+              },
+              "id": "CWE-614"
+            }
+          ],
+          "rank": 68.0,
+          "partialFingerprints": {
+            "vvaFindingId/v1": "vvaf1_4c3f9f0c89fb4877c6310474d097cddf"
+          }
+        },
+        {
+          "ruleId": "CWE-209: Generation of Error Message Containing Sensitive Information",
+          "level": "warning",
+          "message": {
+            "text": "Processor error detail forwarded to unauthenticated client  [CVSS 4.3: CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:L/I:N/A:N]"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "Node JS/api/src/routes/orders.js"
+                },
+                "region": {
+                  "startLine": 71
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "medium",
+            "security-severity": "4.3",
+            "cvssRating": "Medium",
+            "category": "CWE-209: Generation of Error Message Containing Sensitive Information",
+            "cvssVector": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:L/I:N/A:N",
+            "cwe": "CWE-209 - Generation of Error Message Containing Sensitive Information",
+            "cweId": "CWE-209",
+            "cweName": "Generation of Error Message Containing Sensitive Information",
+            "cvssScore": 4.3,
+            "offensivePriority": "P3",
+            "offensivePriorityLabel": "Internal Network / Privileged Position",
+            "offensivePriorityReason": "Internal Network / Privileged Position | *exposure unverified \u2014 no CMDB context; AV:N (network-routable; internet exposure unconfirmed)*",
+            "confidence": 0.75,
+            "description": "*1 additional call site(s) collapsed during dedup \u2014 same root cause; each location needs the same fix applied.*\n\n#### Description\nOn line 73 the handler returns `{ error: 'Payment failed', detail: err.data?.error }` \u2014 the second field is whatever JSON `error` string the FauxPay server chose to emit. There is no allow-list mapping (e.g., 'declined' vs 'processor_error'); the processor's exact response body reaches the browser. Combined with card-testing via /fauxpay/tokenize this improves signal-to-noise for an attacker distinguishing valid PANs from throwaway BINs.\n\n#### Impact\nThe API forwards the raw `err.data.error` string returned by FauxPay in the response body, exposing processor-internal error messages (declined-reason strings, AVS/CVV mismatch codes, backend identifiers) to the customer. This aids card-testing/enumeration attackers by revealing which /charge failures are 'insufficient funds' vs 'invalid CVV' vs 'blocked BIN'.\n\n#### Exploit scenario\nAttacker checks out with various stolen PANs and observes the `detail` field distinguishing 'card_declined' vs 'invalid_expiry' vs 'insufficient_funds', turning the checkout endpoint into a richer card-validity oracle than /tokenize alone.\n\n#### Preconditions\n- Authenticated customer (self-registration open)\n\n```\nreturn res.status(payErrorStatus(err)).json({ error: 'Payment failed', detail: err.data?.error });\n```\n\n#### How to fix\nDrop the `detail` field entirely, or map err.data.error through an allow-list into a small set of generic strings ('declined', 'processor_unavailable') before returning to the client. Log the raw detail server-side only.\n\n**Exploitability:** Processor error detail leaked. Amplifies card-testing signal for chain F16\u2192/fauxpay/tokenize\u2192F8 oracle.\n\n#### Adversarial verification\n**Verdict:** TRUE_POSITIVE (confidence: 7/10) \u2014 processor error string is forwarded verbatim to any authenticated customer with no allow-list; the anti-pattern is real even though the training stub's error vocabulary is thin",
+            "dedupRelatedLocationCount": 1
+          },
+          "taxa": [
+            {
+              "toolComponent": {
+                "name": "CWE",
+                "guid": "b7c8d9e0-1f2a-3b4c-5d6e-7f8090a1b2c3"
+              },
+              "id": "CWE-209"
+            }
+          ],
+          "relatedLocations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "Node JS/api/src/services/fauxpayClient.js"
+                },
+                "region": {
+                  "startLine": 13,
+                  "endLine": 19
+                }
+              },
+              "message": {
+                "text": "Additional call site \u2014 collapsed during dedup; same root cause as the primary location and needs the same fix."
+              }
+            }
+          ],
+          "rank": 43.0,
+          "partialFingerprints": {
+            "vvaFindingId/v1": "vvaf1_26481ac6d03fbd4ec2e205b1fbf0118e"
+          }
+        },
+        {
+          "ruleId": "CWE-359",
+          "level": "warning",
+          "message": {
+            "text": "Public review endpoint discloses reviewer user_id and full_name  [CVSS 5.3: CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N]"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "Node JS/api/src/routes/reviews.js"
+                },
+                "region": {
+                  "startLine": 9
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "medium",
+            "security-severity": "5.3",
+            "cvssRating": "Medium",
+            "category": "CWE-359",
+            "cvssVector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N",
+            "cwe": "CWE-359",
+            "cweId": "CWE-359",
+            "cvssScore": 5.3,
+            "offensivePriority": "P3",
+            "offensivePriorityLabel": "Internal Network / Privileged Position",
+            "offensivePriorityReason": "Internal Network / Privileged Position | *admin/privileged role required*",
+            "confidence": 0.7,
+            "description": "#### Description\n`reviews.js:9-14` registers the endpoint without `requireAuth` and selects `users.full_name` plus `reviews.user_id`. The row is emitted verbatim in the JSON response. Nothing masks the name to initials, and the numeric user_id exposes an oracle for id-based enumeration against other routes (e.g., admin role-change target IDs).\n\n#### Impact\nGET /api/widgets/:id/reviews is unauthenticated and returns each reviewer's `full_name` and internal `user_id`. Anyone on the internet can iterate widgets, harvest customer full names, and correlate them with stable internal identifiers \u2014 a directory of paying customers plus a mapping to internal keys used by other endpoints.\n\n#### Exploit scenario\nAttacker scrapes /api/widgets to list widget IDs, then unauthenticated GETs /api/widgets/{id}/reviews for each, harvesting `{user_id, full_name}` tuples for every reviewer. The resulting list is fed to phishing or credential-stuffing against /api/auth/login, and the user_id column lets the attacker precompute targets for role-escalation POSTs once any admin session is captured.\n\n#### Preconditions\n- Application deployed with reviews enabled and any reviewer signed up\n\n```\n.select('reviews.id', 'reviews.rating', 'reviews.body', 'reviews.created_at', 'reviews.updated_at', 'reviews.user_id', 'users.full_name');\n```\n\n#### How to fix\nDo not return the internal `user_id` on the public reviews response, and consider returning a display name (first name + initial) rather than the full legal name. Update the `.select()` in reviews.js:14 to omit `reviews.user_id` for anonymous callers and derive a masked display name in a serializer.\n\n**Exploitability:** Public review endpoint discloses user_id and full_name. Provides ID oracle for admin role-change endpoints, feeding F1-forged admin chains.\n\n#### Adversarial verification\n**Verdict:** TRUE_POSITIVE (confidence: 9/10) \u2014 unauthenticated GET returns reviewer full_name and internal user_id; no upstream auth or masking."
+          },
+          "taxa": [
+            {
+              "toolComponent": {
+                "name": "CWE",
+                "guid": "b7c8d9e0-1f2a-3b4c-5d6e-7f8090a1b2c3"
+              },
+              "id": "CWE-359"
+            }
+          ],
+          "rank": 53.0,
+          "partialFingerprints": {
+            "vvaFindingId/v1": "vvaf1_13ed3b47f93e9c06f45d98b5412ee417"
+          }
+        },
+        {
+          "ruleId": "CWE-208",
+          "level": "warning",
+          "message": {
+            "text": "Non-constant-time comparison of FauxPay API key  [CVSS 6.5: CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:L/I:H/A:N]"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "Node JS/fauxpay/src/server.js"
+                },
+                "region": {
+                  "startLine": 43
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "medium",
+            "security-severity": "6.5",
+            "cvssRating": "Medium",
+            "category": "CWE-208",
+            "cvssVector": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:L/I:H/A:N",
+            "cwe": "CWE-208",
+            "cweId": "CWE-208",
+            "cvssScore": 6.5,
+            "offensivePriority": "P3",
+            "offensivePriorityLabel": "Internal Network / Privileged Position",
+            "offensivePriorityReason": "Internal Network / Privileged Position | *exposure unverified \u2014 no CMDB context; AV:N (network-routable; internet exposure unconfirmed)*",
+            "confidence": 0.65,
+            "description": "#### Description\nrequireApiKey compares `key !== API_KEY` using JS string equality. V8's string-equality short-circuits on the first unequal byte, so a request whose bearer starts with a correct prefix takes measurably longer to reject than one that differs in the first byte. The in-file comment acknowledges this and defers to a real timingSafeEqual \u2014 but the training deployment is being threat-modelled as a real internet-facing service, and the FauxPay container is exposed through merchant nginx via /fauxpay/.\n\n#### Impact\nThe processor's shared bearer key is validated with `!==`, which returns as soon as the first differing character is found. An attacker who can measure high-precision response latency (localhost neighbour, colocated container) can recover the key byte-by-byte. Once recovered, the key authorises /charge and /refund \u2014 arbitrary money movement.\n\n#### Exploit scenario\nAttacker in the same host or network sends /fauxpay/refund with varying `Authorization: Bearer <candidate>` prefixes, measuring server response time; longest response indicates the longest matching prefix. Extending byte-by-byte recovers FAUXPAY_API_KEY, after which the attacker calls /fauxpay/refund with any known transaction_id to move funds.\n\n#### Preconditions\n- Ability to time responses accurately (low-latency network access)\n- Knowledge of at least one transaction_id to abuse the recovered key\n\n```\nfunction requireApiKey(req, res, next) {\n  const header = req.headers.authorization || '';\n  const key = header.startsWith('Bearer ') ? header.slice(7) : null;\n  if (key !== API_KEY) return res.status(401).json({ error: 'Invalid FauxPay API key' });\n  next();\n}\n```\n\n#### How to fix\nCompare using `crypto.timingSafeEqual(Buffer.from(key), Buffer.from(API_KEY))` after length check; return the same 401 shape either way.\n\n**Exploitability:** Non-constant-time API-key compare. Practical remote-timing extraction over WAN is extremely difficult; blocked in practice by network jitter. Useful only as theoretical stepping-stone; F5's public default key already trivializes the same asset.\n\n#### Adversarial verification\n**Verdict:** TRUE_POSITIVE (confidence: 7/10) \u2014 non-constant-time bearer comparison reachable via nginx `/fauxpay/`; class-valid but exploitability is marginal due to nanosecond-scale JS timing signal and 20 r/m nginx rate limit."
+          },
+          "taxa": [
+            {
+              "toolComponent": {
+                "name": "CWE",
+                "guid": "b7c8d9e0-1f2a-3b4c-5d6e-7f8090a1b2c3"
+              },
+              "id": "CWE-208"
+            }
+          ],
+          "rank": 65.0,
+          "partialFingerprints": {
+            "vvaFindingId/v1": "vvaf1_7a83484e25b4d124a97449e511e60a4b"
+          }
+        },
+        {
+          "ruleId": "CWE-367: Time-of-check Time-of-use (TOCTOU) Race Condition",
+          "level": "note",
+          "message": {
+            "text": "TOCTOU on stock check enables overselling / negative stock  [CVSS 3.1: CVSS:3.1/AV:N/AC:H/PR:L/UI:N/S:U/C:N/I:L/A:N]"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "Node JS/api/src/routes/orders.js"
+                },
+                "region": {
+                  "startLine": 30
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "low",
+            "security-severity": "3.1",
+            "cvssRating": "Low",
+            "category": "CWE-367: Time-of-check Time-of-use (TOCTOU) Race Condition",
+            "cvssVector": "CVSS:3.1/AV:N/AC:H/PR:L/UI:N/S:U/C:N/I:L/A:N",
+            "cwe": "CWE-367 - Time-of-check Time-of-use (TOCTOU) Race Condition",
+            "cweId": "CWE-367",
+            "cweName": "Time-of-check Time-of-use (TOCTOU) Race Condition",
+            "cvssScore": 3.1,
+            "offensivePriority": "P3",
+            "offensivePriorityLabel": "Internal Network / Privileged Position",
+            "offensivePriorityReason": "Internal Network / Privileged Position | *exposure unverified \u2014 no CMDB context; AV:N (network-routable; internet exposure unconfirmed)*",
+            "confidence": 0.9,
+            "description": "#### Description\nLines 30-39 read widgets rows via a plain select (outside any transaction) and compare widget.stock_quantity to requested quantity. Then in the transaction on lines 61-63, an unconditional `.decrement('stock_quantity', li.quantity)` is issued. There is no row-lock (`forUpdate()`), no `where('stock_quantity', '>=', li.quantity)` guard on the decrement, and no verification after the decrement that stock is still >= 0. Under PostgreSQL's default READ COMMITTED isolation and concurrent traffic, the check-then-act sequence is racy: two orders for the last unit both observe stock=1, both decrement, resulting in stock=-1 while both charges succeed.\n\n#### Impact\nConcurrent checkouts read widget.stock_quantity before decrementing it, with no SELECT ... FOR UPDATE and no post-decrement validation. Two customers hitting checkout at the same time for the last remaining unit can both pass the stock check and both decrement, causing negative stock, oversold merchandise, and integrity loss in the inventory ledger.\n\n#### Exploit scenario\nAttacker (or two colluding buyers) races two POSTs to /api/orders for the same low-stock widget. Both requests read stock_quantity=1, both pass validation, both decrement inside their own transactions, and both charges succeed. The merchant now owes two units when only one exists; widgets.stock_quantity is -1.\n\n#### Preconditions\n- Any authenticated customer\n- A widget with low stock relative to concurrent demand\n\n```\nif (widget.stock_quantity < item.quantity) { return res.status(400)... }\n...\nawait trx('widgets').where({ id: li.widget_id }).decrement('stock_quantity', li.quantity);\n```\n\n#### How to fix\nInside the transaction, use `trx('widgets').where('id', li.widget_id).andWhere('stock_quantity', '>=', li.quantity).decrement('stock_quantity', li.quantity)` and check the affected-row count \u2014 abort the transaction if 0. Alternatively perform the stock check inside the transaction with `forUpdate()`.\n\n**Exploitability:** TOCTOU on stock enables overselling / negative stock. Concurrency required (AC:H). Chains with F2 to weaponize inventory abuse.\n\n#### Adversarial verification\n**Verdict:** TRUE_POSITIVE (confidence: 9/10) \u2014 plain non-locking SELECT then unconditional decrement inside a READ COMMITTED transaction, no `forUpdate`, no conditional `where('stock_quantity','>=',qty)`, reachable by any authenticated user via POST /api/orders."
+          },
+          "taxa": [
+            {
+              "toolComponent": {
+                "name": "CWE",
+                "guid": "b7c8d9e0-1f2a-3b4c-5d6e-7f8090a1b2c3"
+              },
+              "id": "CWE-367"
+            }
+          ],
+          "rank": 31.0,
+          "partialFingerprints": {
+            "vvaFindingId/v1": "vvaf1_32e165981a9187eac05efa74bb5b248e"
+          }
+        },
+        {
+          "ruleId": "CWE-362: Concurrent Execution using Shared Resource with Improper Synchronization (Race Condition)",
+          "level": "note",
+          "message": {
+            "text": "Order re-price races admin price mutations  [CVSS 3.1: CVSS:3.1/AV:N/AC:H/PR:L/UI:N/S:U/C:N/I:L/A:N]"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "Node JS/api/src/routes/orders.js"
+                },
+                "region": {
+                  "startLine": 28
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "low",
+            "security-severity": "3.1",
+            "cvssRating": "Low",
+            "category": "CWE-362: Concurrent Execution using Shared Resource with Improper Synchronization (Race Condition)",
+            "cvssVector": "CVSS:3.1/AV:N/AC:H/PR:L/UI:N/S:U/C:N/I:L/A:N",
+            "cwe": "CWE-362 - Concurrent Execution using Shared Resource with Improper Synchronization (Race Condition)",
+            "cweId": "CWE-362",
+            "cweName": "Concurrent Execution using Shared Resource with Improper Synchronization (Race Condition)",
+            "cvssScore": 3.1,
+            "offensivePriority": "P3",
+            "offensivePriorityLabel": "Internal Network / Privileged Position",
+            "offensivePriorityReason": "Internal Network / Privileged Position | *exposure unverified \u2014 no CMDB context; AV:N (network-routable; internet exposure unconfirmed)*",
+            "confidence": 0.7,
+            "description": "#### Description\nThe re-price step at line 30 (`db('widgets').whereIn('id', widgetIds)`) runs outside the transaction started at line 47. Between reading widgets.price_cents and inserting order_items with unit_price_cents=widget.price_cents (line 43/59), an admin PATCH /admin/widgets/:id can commit a new price. The transaction sees the stale in-memory `widget.price_cents` snapshot and charges FauxPay `totalCents` computed from it, regardless of the price the customer currently sees or the price admins believe is in effect.\n\n#### Impact\nAn admin lowering a widget's price after the SELECT at line 30 but before the order row is inserted at line 48 results in an order stored at the pre-change price and the customer charged the higher amount despite paying at the newer displayed price; the reverse allows the customer to lock in an older lower price after a raise. Impacts pricing integrity and enables scripted 'flash sale' exploitation.\n\n#### Exploit scenario\nAttacker watches /api/widgets and detects a price drop. They fire many concurrent POST /api/orders in a loop starting just before the change is expected (e.g., a known promo window). Some requests capture the old-then-new mismatch and receive orders at the price they prefer while charging the other; combined with the TOCTOU stock issue above, this compounds inventory and financial loss.\n\n#### Preconditions\n- Valid customer JWT\n- Some price mutation happens (scheduled promo, admin churn) or attacker is racing an admin action\n\n```\nconst widgets = await db('widgets').whereIn('id', widgetIds).andWhere({ is_active: true });\n...\nconst totalCents = lineItems.reduce((sum, i) => sum + i.unit_price_cents * i.quantity, 0);\nconst order = await db.transaction(async (trx) => { ... });\n```\n\n#### How to fix\nRead widget rows for pricing inside the transaction using `SELECT ... FOR UPDATE` (or knex `.forUpdate()`), and derive totalCents inside the transaction rather than from the outside snapshot at line 45. Ensure the same rows locked for pricing are locked for stock decrement.\n\n**Exploitability:** Order re-price race outside transaction. Chains with F3 (no audit on admin price changes) so a colluding/forged admin can flip price mid-checkout with no attribution.\n\n#### Adversarial verification\n**Verdict:** TRUE_POSITIVE (confidence: 8/10) \u2014 Widget prices are read outside the order transaction and never re-verified/locked inside it, letting a concurrent admin PATCH /admin/widgets/:id create a stale-price window that a customer can race for financial gain."
+          },
+          "taxa": [
+            {
+              "toolComponent": {
+                "name": "CWE",
+                "guid": "b7c8d9e0-1f2a-3b4c-5d6e-7f8090a1b2c3"
+              },
+              "id": "CWE-362"
+            }
+          ],
+          "rank": 31.0,
+          "partialFingerprints": {
+            "vvaFindingId/v1": "vvaf1_ab617bfc03ab807b339f2c23a222a146"
+          }
+        },
+        {
+          "ruleId": "CWE-778",
+          "level": "note",
+          "message": {
+            "text": "No audit log for admin catalog mutations or role changes  [CVSS 2.7: CVSS:3.1/AV:N/AC:L/PR:H/UI:N/S:U/C:N/I:L/A:N]"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "Node JS/api/src/routes/admin.js"
+                },
+                "region": {
+                  "startLine": 10
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "low",
+            "security-severity": "2.7",
+            "cvssRating": "Low",
+            "category": "CWE-778",
+            "cvssVector": "CVSS:3.1/AV:N/AC:L/PR:H/UI:N/S:U/C:N/I:L/A:N",
+            "cwe": "CWE-778",
+            "cweId": "CWE-778",
+            "cvssScore": 2.7,
+            "offensivePriority": "P3",
+            "offensivePriorityLabel": "Internal Network / Privileged Position",
+            "offensivePriorityReason": "Internal Network / Privileged Position | *PR:H - high-privilege auth required*",
+            "confidence": 0.8,
+            "description": "#### Description\nThe admin router applies `requireAuth, requireRole('admin')` (line 8) and then handles high-impact mutations (POST /widgets, PATCH /widgets/:id, and the role-change / review-delete endpoints listed in the entry-point inventory at admin.js:52-80). None of these handlers emit a log entry or write to any audit table before or after the mutation. Combined with the absence of a `logins` audit table, there is no way to answer 'who changed this price to $0.01 at 3am, from where?'. This matches the T24 repudiation finding in the threat model but is unmitigated at code level.\n\n#### Impact\nWidget create/update (and the role-change / review-moderation endpoints reached via the same router at admin.js) execute with no audit record of who performed the action, from what IP, or what values were changed. A compromised or malicious admin \u2014 reachable because JWT role is a self-asserted claim signed with a secret that may be the committed default (T1/T4) \u2014 can silently zero prices, elevate accounts, or delete reviews with no post-hoc attribution.\n\n#### Exploit scenario\nAn insider (or an outside attacker who forged an admin JWT with the default JWT_SECRET) issues PATCH /api/admin/widgets/:id to slash prices to zero, buys stock, then reverts. Because no row records the change, the price manipulation cannot be attributed to a specific admin session, and no alert fires on the anomalous mutation.\n\n#### Preconditions\n- Attacker holds or forges an admin JWT\n- Operator lacks database-level auditing (pg_audit) as compensating control\n\n```\nrouter.use(requireAuth, requireRole('admin'));\n\nrouter.post('/widgets', asyncHandler(async (req, res) => {\n  ...\n  const [row] = await db('widgets').insert({...}).returning('id');\n  const widget = await db('widgets').where({ id: row.id ?? row }).first();\n  res.status(201).json(widget);\n}));\n```\n\n#### How to fix\nIn every admin.js and cs.js mutating handler, insert a row into an append-only audit_log table capturing (actor_user_id, actor_ip, route, target_id, before, after, timestamp). Persist role changes, refunds, price/stock edits, and review deletions. Also emit a structured log line to the standard sink for real-time alerting.\n\n**Exploitability:** No audit for admin catalog/role changes. Non-repudiation gap; enables F22 mid-checkout price manipulation to be untraceable after F1-forged admin takeover.\n\n#### Adversarial verification\n**Verdict:** TRUE_POSITIVE (confidence: 8/10) \u2014 Admin router handlers for widget/category/user-role/review mutations write straight to the DB with no audit table, no logging middleware, and no per-handler audit call; confirmed absent in code, migrations, and app wiring."
+          },
+          "taxa": [
+            {
+              "toolComponent": {
+                "name": "CWE",
+                "guid": "b7c8d9e0-1f2a-3b4c-5d6e-7f8090a1b2c3"
+              },
+              "id": "CWE-778"
+            }
+          ],
+          "rank": 27.0,
+          "partialFingerprints": {
+            "vvaFindingId/v1": "vvaf1_0e8d42712b170c9ad09128ea53bd9d84"
+          }
+        },
+        {
+          "ruleId": "CWE-778",
+          "level": "note",
+          "message": {
+            "text": "No logging of failed logins or successful authentication events  [CVSS 3.7: CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:L/I:N/A:N]"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "Node JS/api/src/routes/auth.js"
+                },
+                "region": {
+                  "startLine": 57
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "low",
+            "security-severity": "3.7",
+            "cvssRating": "Low",
+            "category": "CWE-778",
+            "cvssVector": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:L/I:N/A:N",
+            "cwe": "CWE-778",
+            "cweId": "CWE-778",
+            "cvssScore": 3.7,
+            "offensivePriority": "P3",
+            "offensivePriorityLabel": "Internal Network / Privileged Position",
+            "offensivePriorityReason": "Internal Network / Privileged Position | *exposure unverified \u2014 no CMDB context; AV:N (network-routable; internet exposure unconfirmed)*",
+            "confidence": 0.85,
+            "description": "#### Description\nIn `router.post('/login', ...)` the failure path at lines 64-66 returns a 401 without calling any logger. The success path at lines 68-72 issues a session token and returns without logging that user X authenticated from IP Y. `revokeSession` (logout) at line 92 similarly emits nothing. Combined with the same absence in /register, /refresh, and all admin.js state-changing routes (widget create/update at admin.js:10-37, role changes, etc.), there is no audit trail for any security-relevant identity event. The only logging call in the entire API is the generic `console.error(err)` in app.js:33, which fires only on thrown exceptions \u2014 an intentional 401 is not thrown.\n\n#### Impact\nNeither the credential-mismatch branch nor the success branch of /api/auth/login writes anything to a log or audit store. Brute-force / credential-stuffing campaigns against the exposed login endpoint (only rate-limited in-process by an X-Forwarded-For-trusting counter, T17) produce zero detectable signal, and a successful post-breach login is indistinguishable from a legitimate one during forensics. This defeats OWASP A09 baseline expectations for an internet-facing merchant auth endpoint that guards payment/refund flows.\n\n#### Exploit scenario\nAn attacker runs a low-and-slow credential-stuffing attack against /api/auth/login using rotated X-Forwarded-For headers (which the in-process limiter honours per rateLimit.js:5-9). The operator has no per-account failure log, no source-IP tally, and no alertable event stream, so the campaign runs until a hit lands and the attacker mints a valid JWT for a real customer or, worse, an admin seed account.\n\n#### Preconditions\n- Login endpoint is reachable from the internet via nginx (as designed)\n- No external WAF or SIEM inspects raw request bodies\n\n```\n  const user = await db('users').where({ email }).first();\n  if (!user || !(await bcrypt.compare(password, user.password_hash))) {\n    return res.status(401).json({ error: 'Invalid email or password' });\n  }\n\n  const token = await issueSession(res, user);\n  res.json({\n    token,\n    user: { id: user.id, email: user.email, full_name: user.full_name, role: user.role },\n  });\n```\n\n#### How to fix\nAdd structured logging (with sanitisation to strip \\r\\n from any user-supplied field such as email) to both branches of /login, to /register, /refresh, /logout, and to all admin/CS mutations. Log outcome (success/fail/lockout), user id or email, IP, user agent, and correlation id. Route these to a persistent audit table or an external log sink, not stdout only.\n\n**Exploitability:** No login success/failure logging. Ensures F13-enabled brute force and F1 JWT forgery leave no detection surface.\n\n#### Adversarial verification\n**Verdict:** TRUE_POSITIVE (confidence: 8/10) \u2014 No audit logging on any auth or admin state-changing route; only a generic 500-path `console.error` exists. Externally reachable via nginx, no upstream control provides equivalent event recording."
+          },
+          "taxa": [
+            {
+              "toolComponent": {
+                "name": "CWE",
+                "guid": "b7c8d9e0-1f2a-3b4c-5d6e-7f8090a1b2c3"
+              },
+              "id": "CWE-778"
+            }
+          ],
+          "rank": 37.0,
+          "partialFingerprints": {
+            "vvaFindingId/v1": "vvaf1_070a3319bc09435b613f924bea9111af"
+          }
+        },
+        {
+          "ruleId": "CWE-778",
+          "level": "note",
+          "message": {
+            "text": "Refresh-token replay/family-revoke event is silently swallowed  [CVSS 3.7: CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:L/A:N]"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "Node JS/api/src/services/tokens.js"
+                },
+                "region": {
+                  "startLine": 87
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "low",
+            "security-severity": "3.7",
+            "cvssRating": "Low",
+            "category": "CWE-778",
+            "cvssVector": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:L/A:N",
+            "cwe": "CWE-778",
+            "cweId": "CWE-778",
+            "cvssScore": 3.7,
+            "offensivePriority": "P3",
+            "offensivePriorityLabel": "Internal Network / Privileged Position",
+            "offensivePriorityReason": "Internal Network / Privileged Position | *exposure unverified \u2014 no CMDB context; AV:N (network-routable; internet exposure unconfirmed)*",
+            "confidence": 0.8,
+            "description": "#### Description\n`rotateSession` at line 87 explicitly branches on `existing.revoked_at`, which by design means an already-consumed refresh token was replayed. The comment above (lines 77-80) states this is the token-theft heuristic \u2014 'either a copy leaked or a client raced itself'. On that path the code mass-revokes all outstanding tokens for the user (lines 88-91) and returns null, but there is no `console.warn`, structured log, audit-table insert, or notification. The very event the design says is a probable compromise produces zero observable output. Same for expired-token attempts (line 95) and unknown user_id (line 101).\n\n#### Impact\nThe single strongest indicator of a stolen refresh token \u2014 the presentation of an already-consumed token \u2014 is detected here and used to revoke the whole token family, but no log, metric, or alert is emitted. Incident responders are left with no signal that a session was likely compromised, so credential theft, XSS-exfil of the refresh cookie, or a leaked backup goes unnoticed until the victim complains.\n\n#### Exploit scenario\nAn attacker who has stolen a refresh token via cookie theft (network MITM against the self-signed cert, or supply-chain XSS) uses it once to mint a new access token. When the legitimate user returns, their still-cached refresh cookie triggers the replay branch, forcing them to re-login \u2014 but no operator ever learns a compromise occurred, so the underlying leak (malicious dependency, poisoned CDN, phished session) is never investigated, and the same class of theft happens repeatedly against other users.\n\n#### Preconditions\n- A refresh token has been stolen or replayed\n- No external log-shipping catches the missing audit event\n\n```\n  if (existing.revoked_at) {\n    await db('refresh_tokens')\n      .where({ user_id: existing.user_id })\n      .whereNull('revoked_at')\n      .update({ revoked_at: db.fn.now() });\n    return null;\n  }\n\n  if (new Date(existing.expires_at) <= new Date()) return null;\n```\n\n#### How to fix\nEmit a security-level log entry (with user_id, source IP, user agent, and refresh-token id) on every non-success branch of rotateSession \u2014 especially the replay-of-consumed-token branch \u2014 and, ideally, insert an audit row that surfaces in the admin console. Do the same for revokeSession and for logins after a family revocation so responders can correlate.\n\n**Exploitability:** Family-revoke event silently swallowed. Even where F12 race doesn't apply, the detection primitive produces zero output \u2014 pure detection gap.\n\n#### Adversarial verification\n**Verdict:** TRUE_POSITIVE (confidence: 8/10) \u2014 replay/family-revoke branch is real, unlogged, and reachable via public /api/auth/refresh; no logger or audit table exists anywhere in the API to catch it."
+          },
+          "taxa": [
+            {
+              "toolComponent": {
+                "name": "CWE",
+                "guid": "b7c8d9e0-1f2a-3b4c-5d6e-7f8090a1b2c3"
+              },
+              "id": "CWE-778"
+            }
+          ],
+          "rank": 37.0,
+          "partialFingerprints": {
+            "vvaFindingId/v1": "vvaf1_2777e494b67b096b754382aa89435227"
+          }
+        }
+      ],
+      "invocations": [
+        {
+          "executionSuccessful": true,
+          "toolExecutionNotifications": [
+            {
+              "level": "warning",
+              "message": {
+                "text": "s4: 2 non-fatal error(s) logged"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
