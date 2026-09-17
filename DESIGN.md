@@ -346,7 +346,7 @@ The application integrates with a **real, external, third-party payment processo
 - `POST /charge` — backend calls with `{ card_token, amount_cents, currency, order_id }`, returns `{ transaction_id, status, last4, brand }`.
 - `POST /refund` — backend calls with `{ transaction_id, amount_cents }`, returns `{ refund_id, status }`.
 
-This integration surface is intentionally modeled on how real gateways work (client-side tokenization, server-side charge/refund) rather than being a bespoke protocol, so the app's behavior generalizes to whichever real processor a deployment chooses. See §10 for how this integration is tested without moving real money.
+This integration surface is intentionally modeled on how real gateways work (client-side tokenization, server-side charge/refund) rather than being a bespoke protocol, so the app's behavior generalizes to whichever real processor a deployment chooses. FauxPay is that real, actual processor for this design — not a stand-in routed through the API Gateway — and is reached directly by the SPA (tokenization) and by `api` (charges/refunds), never through the gateway/proxy (§3.1). See §10 for how this integration is tested without moving real money.
 
 ---
 
