@@ -35,7 +35,7 @@ The app is a **Single Page Application (SPA)** frontend backed by a **REST API**
 | Backend     | Node.js API server (e.g. Express)                                                                                                                                                    |
 | Database    | SQL (PostgreSQL or SQLite for local/dev) via an ORM/query builder                                                                                                                    |
 | Auth        | Short-lived JWT access tokens (held in-memory client-side) + rotating opaque refresh tokens in an `HttpOnly`/`Secure`/`SameSite` cookie (see §3.2); password hashing (bcrypt/argon2) |
-| Email       | Transactional email provider (SMTP relay or API), used to deliver password-reset links                                                                                               |
+| Email       | Simple SMTP client on the `api` server (e.g. Nodemailer over SMTP), used to deliver password-reset links and email-verification magic links                                          |
 | Payments    | External payment processor (e.g. Stripe-style gateway), accessed over HTTPS via a thin client module                                                                                 |
 | Deployment  | Docker containers, orchestrated via Docker Compose                                                                                                                                   |
 
@@ -43,38 +43,47 @@ The app is a **Single Page Application (SPA)** frontend backed by a **REST API**
 
 ## 3.1 Architecture Diagram
 
-The following diagram reflects the containers described in §3 and §11: a browser-hosted SPA, an API Gateway fronting the API, an API server backed by a SQL database, and a third-party payment processor that lives outside our infrastructure. All client traffic to our backend passes through the gateway; the SPA talks to the processor directly for tokenization, and the API talks to it server-to-server for charges/refunds.
+The following diagram reflects the containers described in §3 and §11: a browser-hosted SPA, an API Gateway fronting the API, an API server backed by a SQL database, a third-party payment processor that lives outside our infrastructure, and an outbound SMTP relay the API uses to deliver password-reset and email-verification messages. All client traffic to our backend passes through the gateway; the SPA talks to the processor directly for tokenization, and the API talks to the processor server-to-server for charges/refunds and to the SMTP relay server-to-server for outbound email.
 
 ```mermaid
-flowchart TB
-    clients["Clients\n(Guest, Customer, Admin, Customer Service)"]
+architecture-beta
+    group outside(internet)[Outside our trust boundary]
+    group dockerhost(cloud)[Docker Compose Environment our infrastructure]
 
-    subgraph dockerhost["Docker Compose Environment (our infrastructure)"]
-        gateway["gateway container\nAPI Gateway: TLS termination,\nrate limiting, JWT authN/token validation"]
-        spa["web container\nSPA (React), static build served via nginx"]
-        api["api container\nREST API (Node.js / Express), business logic + authZ"]
-        db[("db container\nSQL Database, PostgreSQL")]
-        migrate["migrate (one-shot)\nruns schema migrations/seed"]
-    end
+    service clients(internet)[Clients Guest Customer Admin CS] in outside
+    service processor(cloud)[Payment Processor external third party] in outside
+    service smtp(cloud)[SMTP Relay outbound email delivery] in outside
 
-    processor["Payment Processor\n(external third-party gateway,\ne.g. Stripe-style)"]
+    service gateway(server)[gateway container API Gateway TLS rate limit JWT authN] in dockerhost
+    service spa(server)[web container SPA React served via nginx] in dockerhost
+    service api(server)[api container REST API Node Express authZ] in dockerhost
+    service db(database)[db container PostgreSQL] in dockerhost
+    service migrate(disk)[migrate one shot schema migrations and seed] in dockerhost
 
-    clients -->|HTTPS| gateway
-
-    gateway -->|"static assets"| spa
-    gateway -->|"JSON REST API, rate limited +\nJWT validated (auth, catalog, cart, orders)"| api
-    spa -->|"POST /tokenize\n(card details, direct from browser)"| processor
-
-    api -->|"parameterized SQL"| db
-    api -->|"POST /charge, POST /refund\n(server-to-server, over the internet)"| processor
-
-    migrate -->|"schema migrations"| db
-    migrate -.->|"must complete before api serves traffic"| api
-
-    style processor fill:#fee,stroke:#900
-    style db fill:#eef,stroke:#339
-    style gateway fill:#ffe,stroke:#960
+    clients:R --> L:gateway
+    gateway:R --> L:spa
+    gateway:B --> T:api
+    spa:R --> L:processor
+    api:R --> L:db
+    api:B --> T:processor
+    api:T --> B:smtp
+    migrate:R --> L:api
+    migrate:B --> T:db
 ```
+
+The `architecture-beta` stencil has no edge labels, so the protocol/payload on each connection is listed here instead (the edges above are the same set as the containers and flows in §3 and §11):
+
+| Edge                  | What flows                                                                                  |
+| --------------------- | ------------------------------------------------------------------------------------------- |
+| `clients → gateway`   | HTTPS — the sole public entry point into our infrastructure                                  |
+| `gateway → web`       | Static SPA assets                                                                            |
+| `gateway → api`       | JSON REST API (auth, catalog, cart, orders), rate limited + JWT validated                   |
+| `web → processor`     | `POST /tokenize` — card details, direct from the browser, never through our backend          |
+| `api → db`            | Parameterized SQL                                                                            |
+| `api → processor`     | `POST /charge`, `POST /refund` — server-to-server over the public internet                  |
+| `api → smtp`          | Outbound SMTP — password-reset links (§7.1a) and email-verification magic links (§7.1d)     |
+| `migrate → db`        | Schema migrations / seed                                                                     |
+| `migrate → api`       | Ordering constraint only: `migrate` must complete before `api` serves traffic (§11.4)       |
 
 Key architectural points from this document:
 
@@ -139,7 +148,9 @@ The full set of tables, columns, types, and foreign keys is captured in the ER d
 - **Carts**: one active cart per user (or session for guests, if guest carts are supported — otherwise require login before cart use).
 - **`cart_items.unit_price_cents`**: recommend **re-pricing at checkout** from `widgets.price_cents` rather than trusting a price snapshotted at add-time, to avoid stale-price abuse.
 - **`order_items.unit_price_cents`** is immutable once set — it is the price at time of purchase and is never affected by later catalog price changes.
+- **`users.email_verified`** defaults to `false` on registration and is set `true` only when an `email_verification_tokens` row is successfully redeemed (§7.1d). Unverified accounts can log in but are restricted from state-changing actions (checkout, reviews) until verified — see §7.1d for the exact gate.
 - **`password_reset_tokens`** are single-use and time-limited: a token is stored hashed (never plaintext), carries an `expires_at`, and is marked used (or deleted) the moment it's redeemed or superseded by a newer request.
+- **`email_verification_tokens`** follow the same single-use, time-limited, hashed-storage pattern as `password_reset_tokens`: the plaintext token only ever appears once, inside the magic-link URL emailed to the user (§7.1d), and the stored row carries only its hash plus `expires_at`/`used_at`.
 - **`users.failed_login_attempts` / `locked_until`** implement account lockout: consecutive failed logins increment the counter; reaching a configured threshold sets `locked_until` (a cooldown period) and further login attempts are rejected until it elapses. A successful login resets the counter.
 - **`refresh_tokens`** back the session/token-theft mitigations in §3.2: each row is a single-use, rotating refresh token stored hashed (never plaintext), with `expires_at` and `revoked_at`. Revoking a user's sessions (e.g. on password change) means setting `revoked_at` on their active rows here — the short-lived JWT access token itself is never persisted or revocable.
 - **No table ever stores a full card number, CVV, or expiration date.** Only the processor's opaque token (`payments.processor_card_token`) and display metadata (`card_last4`, `card_brand`) are persisted, consistent with basic PCI-DSS scope reduction.
@@ -167,6 +178,7 @@ erDiagram
         string password_hash "bcrypt/argon2 hash"
         string full_name "display name"
         enum role "customer, admin, customer_service"
+        bool email_verified "default false, set true on verified magic-link click"
         int failed_login_attempts "default 0"
         timestamp locked_until "nullable"
         timestamp created_at "account creation time"
@@ -307,16 +319,26 @@ erDiagram
 
 ### 5.3 Proposed ER Diagram — Auth & Session Security
 
-The `password_reset_tokens` and `refresh_tokens` tables that back §3.2 and §7.1a/§7.1b are split out here rather than folded into §5.1/§5.2, both to keep those diagrams smaller and because they're conceptually about session/credential security rather than the commerce domain.
+The `password_reset_tokens`, `email_verification_tokens`, and `refresh_tokens` tables that back §3.2 and §7.1a/§7.1b/§7.1d are split out here rather than folded into §5.1/§5.2, both to keep those diagrams smaller and because they're conceptually about session/credential security rather than the commerce domain.
 
 ```mermaid
 erDiagram
     USERS ||--o{ PASSWORD_RESET_TOKENS : "requests"
+    USERS ||--o{ EMAIL_VERIFICATION_TOKENS : "requests"
     USERS ||--o{ REFRESH_TOKENS : "authenticates via"
 
     PASSWORD_RESET_TOKENS {
         id id PK "primary key"
         id user_id FK "requesting user"
+        string token_hash "hashed, never plaintext"
+        timestamp expires_at "single-use, time-limited"
+        timestamp used_at "nullable, set when redeemed"
+        timestamp created_at "request time"
+    }
+
+    EMAIL_VERIFICATION_TOKENS {
+        id id PK "primary key"
+        id user_id FK "user to verify"
         string token_hash "hashed, never plaintext"
         timestamp expires_at "single-use, time-limited"
         timestamp used_at "nullable, set when redeemed"
@@ -354,8 +376,9 @@ This integration surface is intentionally modeled on how real gateways work (cli
 
 ### 7.1 Registration / Login
 
-1. Guest submits email/password (+ name) → server hashes password, creates `users` row with role `customer`.
-2. Login validates credentials, then issues a short-lived JWT access token (returned in the response body) and a rotating refresh token (set as an `HttpOnly`/`Secure`/`SameSite` cookie) — see §3.2 for why the two tokens are handled differently. See §7.1c for the account-lockout behavior applied on repeated failures.
+1. Guest submits email/password (+ name) → server hashes password, creates `users` row with role `customer` and `email_verified=false`.
+2. Server generates a single-use, time-limited email-verification token, stores only its hash in `email_verification_tokens`, and emails a magic link containing the plaintext token to the address just registered (§7.1d) — this happens synchronously as part of registration, not as a separate step the customer has to request.
+3. Login validates credentials, then issues a short-lived JWT access token (returned in the response body) and a rotating refresh token (set as an `HttpOnly`/`Secure`/`SameSite` cookie) — see §3.2 for why the two tokens are handled differently. See §7.1c for the account-lockout behavior applied on repeated failures. Login succeeds regardless of `email_verified`; verification only gates the actions listed in §7.1d.
 
 ### 7.1a Forgot / Reset Password
 
@@ -372,6 +395,15 @@ This integration surface is intentionally modeled on how real gateways work (cli
 3. On success: server hashes and stores the new password, and revokes all of the user's `refresh_tokens` (§3.2) other than the one backing the current session.
 4. On failure (current password incorrect): request rejected, password unchanged.
 
+### 7.1d Email Verification
+
+1. On registration (§7.1), the server generates a single-use, time-limited token, stores only its hash in `email_verification_tokens` (with `expires_at`), and emails a magic link of the form `https://<app-origin>/verify-email?token=<plaintext token>` to the registered address via the SMTP client described in §3 (`api` connects directly to an outbound SMTP relay — no third-party HTTP email API is involved).
+2. The customer opens the link; the SPA reads `token` from the query string and calls the API rather than rendering it as a clickable action, so the token is consumed on page load.
+3. Server hashes the presented token, looks it up in `email_verification_tokens`, and validates it exists, is unexpired, and is unused.
+4. On success: server sets `users.email_verified=true` and marks the token used (`used_at=now`). On failure (missing, expired, or already-used token): the request is rejected with a generic error and the customer is offered a way to request a new link.
+5. A customer can request a new verification email at any time (e.g. from account settings, or from a "resend" prompt shown wherever verification is required) if the original link expired or was lost; requesting a new one invalidates any prior unused token for that user (superseded, same pattern as `password_reset_tokens` in §5).
+6. **What verification gates**: an unverified account can still log in and browse, but checkout (§7.3) and submitting a review (§7.2a) are blocked with a "please verify your email" error until `email_verified=true`. This keeps the friction of verification off the login path while still requiring it before the actions most sensitive to a fake/typo'd email address (order confirmations, review authenticity).
+
 ### 7.1c Account Lockout / Login
 
 1. Login request arrives with email + password.
@@ -387,7 +419,7 @@ This integration surface is intentionally modeled on how real gateways work (cli
 ### 7.2a Customer — Product Reviews
 
 1. Authenticated customer opens a widget's detail page for a widget they have a `paid` order for, and submits a rating (1–5) and review text.
-2. Server verifies the customer has at least one `order_items` row for that widget on a `paid` order, and that they don't already have a review on this widget; creates the `reviews` row referencing that `order_items` row.
+2. Server checks `users.email_verified` first — an unverified customer is rejected with a "please verify your email" error (§7.1d) before any purchase check runs. Otherwise, server verifies the customer has at least one `order_items` row for that widget on a `paid` order, and that they don't already have a review on this widget; creates the `reviews` row referencing that `order_items` row.
 3. A customer may edit or delete their own review at any time; editing updates `rating`/`body` and `updated_at`.
 4. Admin can remove any review that violates content policy.
 5. Guests and customers can view all reviews (rating, body, reviewing customer's display name, date) on the widget's detail page (§7.2), alongside the widget's average rating and review count.
@@ -397,7 +429,7 @@ This integration surface is intentionally modeled on how real gateways work (cli
 1. Authenticated customer adds/updates/removes items in their cart.
 2. On checkout: customer supplies shipping address and card details (entered directly into a payment-processor-hosted field/component in the SPA → tokenized client-side).
 3. SPA sends `card_token` + cart + shipping address to backend `POST /api/orders`.
-4. Backend re-prices cart from current `widgets.price_cents`, creates `orders` (status `pending_payment`) + `order_items`, calls the payment processor `/charge`.
+4. Backend checks `users.email_verified` first — an unverified customer's order is rejected with a "please verify your email" error (§7.1d) before any charge is attempted. Otherwise, backend re-prices cart from current `widgets.price_cents`, creates `orders` (status `pending_payment`) + `order_items`, calls the payment processor `/charge`.
 5. On success: create `payments` row, set order status `paid`, decrement `stock_quantity`, clear cart.
 6. On failure: order marked failed/cancelled, customer notified, cart preserved.
 
@@ -434,14 +466,20 @@ sequenceDiagram
     participant SPA
     participant API
     participant DB
+    participant SMTP as SMTP Relay
 
     Guest->>SPA: Enter email, password, name
     SPA->>API: POST /api/auth/register
     API->>API: Hash password (bcrypt/argon2)
-    API->>DB: INSERT users (role=customer)
+    API->>DB: INSERT users (role=customer, email_verified=false)
     DB-->>API: user row
+    API->>API: Generate single-use verification token, hash it
+    API->>DB: INSERT email_verification_tokens {user_id, token_hash, expires_at}
+    DB-->>API: ack
+    API->>SMTP: Send verification email (magic link, plaintext token)
+    SMTP-->>Guest: Verify-your-email message
     API-->>SPA: 201 Created
-    SPA-->>Guest: Registration confirmed
+    SPA-->>Guest: Registration confirmed, check your email to verify
 
     Guest->>SPA: Enter email, password
     SPA->>API: POST /api/auth/login
@@ -458,6 +496,45 @@ sequenceDiagram
 ```
 
 _(See §3.2 for why the access token stays in memory while the refresh token lives only in an `HttpOnly` cookie.)_
+
+### 7.7.1a Email Verification (§7.1d)
+
+```mermaid
+sequenceDiagram
+    actor Guest
+    participant SPA
+    participant API
+    participant DB
+
+    Guest->>SPA: Click magic link from verification email
+    SPA->>API: POST /api/auth/verify-email {token}
+    API->>API: Hash presented token
+    API->>DB: SELECT email_verification_tokens by token_hash
+    DB-->>API: token row (or none)
+
+    alt token valid (found, unexpired, unused)
+        API->>DB: UPDATE users SET email_verified=true
+        API->>DB: UPDATE email_verification_tokens SET used_at=now
+        DB-->>API: ack
+        API-->>SPA: 200 OK (email verified)
+        SPA-->>Guest: "Your email is verified"
+    else token invalid/expired/used
+        API-->>SPA: 400 Bad Request
+        SPA-->>Guest: Show error, offer to resend verification email
+    end
+
+    opt customer requests a new link
+        Guest->>SPA: Click "resend verification email"
+        SPA->>API: POST /api/auth/resend-verification
+        API->>DB: UPDATE email_verification_tokens SET used_at=now WHERE user_id=... AND used_at IS NULL
+        API->>API: Generate new single-use token, hash it
+        API->>DB: INSERT email_verification_tokens {user_id, token_hash, expires_at}
+        DB-->>API: ack
+        API->>API: Send verification email (magic link) via SMTP relay
+        API-->>SPA: 200 OK (generic response)
+        SPA-->>Guest: "If your email needs verifying, a new link was sent"
+    end
+```
 
 ### 7.7.2 Browse Catalog (§7.2)
 
@@ -827,6 +904,8 @@ sequenceDiagram
 ```
 Auth
   POST   /api/auth/register
+  POST   /api/auth/verify-email      (consume magic-link token, set email_verified=true)
+  POST   /api/auth/resend-verification (authenticated, issues a new verification token/email)
   POST   /api/auth/login
   POST   /api/auth/forgot-password   (request reset link, always generic response)
   POST   /api/auth/reset-password    (consume token, set new password)
@@ -894,10 +973,11 @@ All requests reach this surface through the API Gateway (§3.3), which rate-limi
 13. An account is temporarily locked out after a configured number of consecutive failed login attempts, and automatically unlocks after a cooldown period.
 14. A logged-in session survives beyond the short access-token lifetime via silent refresh, without ever exposing a long-lived credential to client-side JavaScript.
 15. Customers who have completed a purchase of a widget can leave a 1–5 star rating and a written review for it; each customer may leave at most one review per widget, editable or deletable by its author. Guests and customers can view all reviews and the widget's average rating on its detail page. Admins can remove any review that violates content policy.
+16. On registration, the app emails a single-use, time-limited magic link to verify the registered email address; login is not blocked on verification, but checkout and submitting a review are, until the address is verified. A customer can request a new verification link if the original expires or is lost.
 
 ## 10. Non-Functional Requirements
 
-- **Security**: password hashing, parameterized SQL (no string-concatenated queries), server-side authZ on every endpoint, no raw card data at rest, HTTPS assumed in deployment. Password reset tokens are single-use, time-limited, stored hashed, and the forgot-password endpoint is rate-limited and returns a uniform response to avoid user enumeration. Login enforces account lockout after repeated failed attempts to slow down credential-stuffing/brute-force attacks, and the API Gateway (§3.3) rate-limits the same routes as a first line of defense in front of it. **Token theft**: the JWT access token is never persisted client-side (in-memory only, ~15 min lifetime); the refresh token that keeps the session alive is only ever exposed via an `HttpOnly`/`Secure`/`SameSite` cookie, is single-use with rotation, and reuse of an already-rotated refresh token revokes the whole session family as a theft signal (§3.2). A CSP restricting inline scripts limits the underlying XSS surface that this design assumes could otherwise be exploited. `api` is never directly reachable by clients — the gateway is the only public entry point and validates every access token before a request reaches it (§3.3, §11.2).
+- **Security**: password hashing, parameterized SQL (no string-concatenated queries), server-side authZ on every endpoint, no raw card data at rest, HTTPS assumed in deployment. Password reset tokens are single-use, time-limited, stored hashed, and the forgot-password endpoint is rate-limited and returns a uniform response to avoid user enumeration. Email-verification tokens (§7.1d) follow the same single-use, time-limited, hashed-storage pattern, and the resend-verification endpoint is rate-limited and returns a uniform response for the same reason. Login enforces account lockout after repeated failed attempts to slow down credential-stuffing/brute-force attacks, and the API Gateway (§3.3) rate-limits the same routes as a first line of defense in front of it. **Token theft**: the JWT access token is never persisted client-side (in-memory only, ~15 min lifetime); the refresh token that keeps the session alive is only ever exposed via an `HttpOnly`/`Secure`/`SameSite` cookie, is single-use with rotation, and reuse of an already-rotated refresh token revokes the whole session family as a theft signal (§3.2). A CSP restricting inline scripts limits the underlying XSS surface that this design assumes could otherwise be exploited. `api` is never directly reachable by clients — the gateway is the only public entry point and validates every access token before a request reaches it (§3.3, §11.2).
 - **Data integrity**: order line items and prices are immutable once an order is placed; catalog price changes never retroactively alter past orders.
 - **Auditability**: refunds and exchanges record the acting staff user, timestamp, and reason.
 - **Testability**: the payment processor client is implemented behind an interface/module boundary so it can be pointed at the processor's sandbox/test mode, or replaced with a test double, for local development and automated tests — this is a testing concern and does not change the production architecture, which always talks to the real processor.
