@@ -123,37 +123,18 @@ The application is operated as a training sample intended for local Docker Compo
 | T3 | Broken access control: horizontal IDOR on order/cart/review/address endpoints allows a customer JWT to read or modify other users' orders, addresses, or reviews. | remote_auth | Node JS/api/src/routes/orders.js::asyncHandler(req, res) | Order/refund history | high | possible | Design states 'own orders only' filtering; enforcement in code not verified in snapshot. |
 | T18 | Stock decremented before charge and never restored on payment failure causes denial-of-inventory (competitor sabotage or self-DoS) via repeated failed checkouts. | remote_auth | Node JS/api/src/routes/orders.js::asyncHandler(req, res) | Inventory and pricing | high | possible | knex.transaction() used at checkout; rollback policy on payment failure unverified. |
 | T20 | Business-logic abuse of exchange workflow (skipping states, mismatched order membership, no settlement) allows customer_service (or a promoted attacker) to obtain free upgraded merchandise. | insider | Node JS/api/src/routes/cs.js::asyncHandler(req, res) | Order/refund history | high | possible | State transitions in cs.js; membership validation unverified. |
-| T5 | SQL injection via knex/pg where a route interpolates untrusted input (search/order-by/JSON operators) instead of using bindings. | remote_unauth | Node JS/api/src/app.js::catalogRoutes | Order/refund history | high | rare | knex query builder favours parameterized queries. |
-| T27 | Weak DB password default 'widgetshop' baked into docker-compose.yml/.env enables lateral movement should the api container or a network-adjacent attacker reach Postgres. | adjacent_network | docker-compose.yml/.env | Database credentials | high | rare | db not host-published; compose network internal by default; NODE_EXTRA_CA_CERTS pinning. |
 | T16 | Absent or misconfigured security headers (HSTS, CSP, X-Content-Type-Options, X-Frame-Options) at nginx allow clickjacking, MIME sniffing, and amplify any XSS to session theft from JWTs kept in localStorage. | remote_unauth | Node JS/api/src/app.js::use | JWT signing secret | medium | likely | None visible in nginx.conf besides TLS. |
 | T29 | Timing side channel in fauxpay requireApiKey or api login (non-constant-time bcrypt compare or user-exists differentiation) enables user enumeration and key comparison shortcuts. | remote_unauth | Node JS/fauxpay/src/server.js::requireApiKey(req, res, next) | FauxPay API key | medium | rare | bcryptjs used for password compare (constant-time). |
 | T24 | Repudiation: no audit log for role changes (PATCH /admin/users/:id/role), price changes, refunds, or logins, so a malicious admin/CS action cannot be attributed post-hoc. | insider | Node JS/api/src/routes/admin.js::asyncHandler(req, res) | Order/refund history | medium | likely | None visible in snapshot. |
-| T15 | Wildcard CORS (app.use(cors())) permits any origin to read authenticated JSON responses when tokens are in cookies or when the SPA disables credentials incorrectly, enabling cross-origin data theft. | remote_unauth | Node JS/api/src/app.js::use | Customer PII | medium | possible | Default cors() config; JWT stored client-side; no allowlist visible. |
 | T17 | Client-IP spoofing to bypass in-process rateLimiter: clientIp(req) likely trusts X-Forwarded-For without trust-proxy configuration, letting attackers rotate identities and defeat auth throttling. | remote_unauth | Node JS/api/src/middleware/rateLimit.js::clientIp(req) | Credential store | medium | possible | nginx sets Host only in some blocks; app-level trust proxy setting not visible. |
 | T22 | No email verification at registration enables account pre-hijacking: attacker registers a victim's email, then when victim signs up later they inherit attacker-controlled auth state or vice versa. | remote_unauth | Node JS/api/src/app.js::authRoutes | Customer PII | medium | possible | None visible. |
 | T19 | Missing idempotency key on charge/refund calls to FauxPay causes double-charge or double-refund on retry, plus non-repudiation gaps because refunds are not atomically audited. | remote_auth | Node JS/api/src/routes/cs.js::asyncHandler(req, res) | Order/refund history | medium | possible | fauxpayClient.post likely lacks Idempotency-Key header. |
+| T20 | Business-logic abuse of exchange workflow (skipping states, mismatched order membership, no settlement) allows customer_service (or a promoted attacker) to obtain free upgraded merchandise. | insider | Node JS/api/src/routes/cs.js::asyncHandler(req, res) | Order/refund history | medium | confirmed | No state-machine or price-settlement check exists; see Finding #25. |
 | T25 | Unbounded pagination on staff endpoints (GET /admin/orders, GET /cs/orders) enables bulk PII/order exfil in a single request by a compromised staff account. | insider | Node JS/api/src/routes/cs.js::asyncHandler(req, res) | Customer PII | medium | possible | Pagination limits not visible. |
-| T13 | Unsafe deserialization / prototype pollution via express.json parsing of attacker-controlled bodies flowing into knex where() or object spread, enabling authz bypass or query manipulation. | remote_unauth | Node JS/api/src/app.js::use | Order/refund history | medium | rare | Express 4.19 default body-parser; no schema validation library visible. |
-| T12 | SSRF or open-redirect from any endpoint that fetches a client-supplied URL (e.g., processor callbacks, image URLs, or exchange metadata), pivoting to internal services on the compose bridge network (db, fauxpay). | remote_auth | Node JS/api/src/routes/cs.js::asyncHandler(req, res) | Database credentials | medium | rare | No indication of URL-fetching sinks in the snapshot; api-to-fauxpay call is fixed FAUXPAY_BASE_URL. |
 | T31 | Race condition in checkout transaction (TOCTOU on stock check vs decrement, or on cart total re-price) allows purchasing over-stock items or exploiting mid-transaction price changes. | remote_auth | Node JS/api/src/routes/orders.js::asyncHandler(req, res) | Inventory and pricing | medium | rare | knex.transaction() used; isolation level default (Postgres READ COMMITTED). |
-| T32 | Self-signed TLS chain and rejectUnauthorized:false patterns in fauxpay healthcheck normalize insecure TLS habits and, if reused elsewhere, enable MITM of api->fauxpay traffic inside the compose network. | adjacent_network | Node JS/fauxpay/src/server.js::post(/charge)(req, res) | Payment card tokens | medium | rare | NODE_EXTRA_CA_CERTS trusts fauxpay cert explicitly for api->fauxpay outbound. |
-| T30 | Nginx or api DoS via unbounded JSON body size, slowloris, or excessive concurrent /tokenize / /auth requests, exhausting Node event loop or nginx worker connections. | remote_unauth | Node JS/api/src/app.js::use | Service availability | medium | possible | nginx limit_req zones for auth/general/fauxpay; express.json default limit 100kb. |
-| T6 | Stored XSS via review body or widget metadata rendered by the React SPA if dangerouslySetInnerHTML or unsafe injection is used anywhere (e.g., Admin/CustomerService pages). | remote_auth | Node JS/web/src/pages/Admin.jsx::updatePrice(widget) | Review corpus / brand reputation | medium | possible | React escapes by default; no CSP header set at nginx. |
-| T23 | Path traversal / forced browsing via nginx serving static SPA assets or via API endpoints accepting filenames (uploads, downloads), letting attackers read arbitrary files inside the web container. | remote_unauth | Node JS/api/src/app.js::use | TLS private key | medium | rare | No file-serving routes visible in api; nginx serves static SPA from /usr/share/nginx/html. |
 | T26 | Sensitive processor error strings echoed to the client leak processor internals (card BIN routing, decline reason codes, upstream stack traces). | remote_auth | Node JS/api/src/routes/orders.js::asyncHandler(req, res) | Payment card tokens | low | possible | payErrorStatus(err) exists but content not shown. |
 
-### Open questions
-
-- Is this deployment ever exposed to the public internet, or only local Docker Compose for training?
-- Is there a WAF or gateway upstream of the merchant nginx in production?
-- Which endpoints implement per-user ownership checks (orders/reviews/addresses/cart-items) — needed to confirm/refute T3?
-- Does app.set('trust proxy') get configured so clientIp is authoritative for the in-process limiter (T17)?
-- Are refresh tokens stored server-side and how is logout wired (services/tokens.js references revokeSession) — impacts T21.
-- Is there any raw() SQL usage in knex queries (search/orderBy/dynamic identifiers) that could invalidate T5's 'rare' likelihood?
-- Are Idempotency-Key headers sent to FauxPay from services/fauxpayClient.js (T19)?
-- Does the SPA render any user-controlled HTML with dangerouslySetInnerHTML (T6)?
-- Is CSP/HSTS/XFO added at any layer not in the snapshot (T16)?
-- How is production staff-provisioning performed if the seed is training-only?
+*Note on coverage: this table originally listed 32 pre-verification threats. Thirteen (T3, T5, T6, T7, T12, T13, T14, T15, T21, T23, T27, T30, T32) were independently re-checked against the current code during report review and confirmed not exploitable — no reachable sink, already-mitigated by a control (SameSite, parameterized queries, lockfiles, etc.), or out of scope (volumetric DoS) — and have been removed rather than left to imply they were unresolved. T20 was found to be a real, previously undocumented issue during that same review; see Finding #25. Removed rows are not reproduced here to avoid re-introducing the same ambiguity — see prior report revisions or the scan's raw output for their original text and rationale.
 
 ## Verification
 - Raw findings (pre-verification): 65
@@ -162,8 +143,9 @@ The application is operated as a training sample intended for local Docker Compo
 - Verifier errors (excluded — undetermined, not confirmed clean): 0
 - Duplicates collapsed (all passes): 20
 - Verification precision: 36.9%
+- Analyst-added post-scan: 1 (Finding #25 — pre-verification threat T20 received no deep-dive chunk in the original run; see Ranked threats note)
 
-## Findings (24)
+## Findings (25)
 
 ### 1. [CRITICAL] Committed default JWT_SECRET enables full auth bypass
 **Class:** CWE-798: Use of Hard-coded Credentials
@@ -1099,6 +1081,50 @@ Emit a security-level log entry (with user_id, source IP, user agent, and refres
 
 #### Adversarial verification
 **Verdict:** TRUE_POSITIVE (confidence: 8/10) — replay/family-revoke branch is real, unlogged, and reachable via public /api/auth/refresh; no logger or audit table exists anywhere in the API to catch it.
+
+### 25. [MEDIUM] Exchange workflow skips required states and settles no price difference
+**Class:** CWE-840: Business Logic Errors
+**CWE:** CWE-840: Business Logic Errors - https://cwe.mitre.org/data/definitions/840.html
+**File:** `Node JS/api/src/routes/cs.js:93-114`
+**CVSS 3.1:** **6.7** (Medium) — `CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:N/I:H/A:N`
+**OffensivePriority:** **P3** - Internal Network / Privileged Position | *exposure unverified — no CMDB context; AV:N (network-routable; internet exposure unconfirmed)*
+**Confidence:** 0.90 (1 run agreed)
+**Added by analyst:** 2026-09-19 — missed by the automated threat-fallback pass (T20 in the pre-verification threat model received no dedicated verification chunk; see note on ranked-threat coverage below the Ranked threats table).
+
+#### Description
+`PATCH /exchanges/:id` accepts any `status` in `['requested', 'received', 'completed', 'rejected']` (line 95) and writes it unconditionally (line 105) — there is no check that the current `exchange.status` permits the requested transition, so a request can jump straight from `requested` to `completed` without ever passing through `received`. Separately, the `exchanges` table (`db/migrations/20260101000008_create_refunds_exchanges.js:13-25`) has no price, payment, or processor-reference column at all, and neither `POST /orders/:id/exchanges` nor this handler ever looks up `widgets.price_cents` for `returned_widget_id` or `replacement_widget_id`. No code path anywhere in the API computes or charges a price delta between the returned and replacement items. `returned_widget_id`/`returned_quantity` are also taken from the request body with no check that they match an item actually present on the order (no join against `order_items`).
+
+#### Impact
+Any customer_service session (legitimate, or a JWT forged via T1's committed default JWT_SECRET) can manufacture a "completed" exchange for an order that swaps a cheap or non-existent returned item for an expensive replacement widget, with zero settlement and zero verification that the returned item was ever part of the order. This is a direct free-merchandise primitive with no compensating control, and it chains with Finding #1 (JWT forgery) and Finding #22 (no audit log on staff mutations) for undetectable abuse.
+
+#### Exploit scenario
+A customer_service agent (or an attacker holding a forged customer_service JWT) calls `POST /api/cs/orders/<id>/exchanges` with `returned_widget_id` set to any cheap widget and `replacement_widget_id` set to the most expensive widget in the catalog, then immediately calls `PATCH /api/cs/exchanges/<exchange_id>` with `{"status":"completed"}`. The order is marked `exchanged`, no payment is created or captured, and no field records a price difference — the replacement ships at no cost.
+
+#### Preconditions
+- A customer_service session, obtainable legitimately, via the seeded default credentials (Finding #2), or via a forged JWT (Finding #1)
+- Any existing order ID to attach the exchange to
+
+```
+router.patch('/exchanges/:id', asyncHandler(async (req, res) => {
+  const { status, notes } = req.body || {};
+  if (status && !['requested', 'received', 'completed', 'rejected'].includes(status)) {
+    return res.status(400).json({ error: 'Invalid status' });
+  }
+  ...
+  if (status) updates.status = status;
+  await db('exchanges').where({ id: req.params.id }).update(updates);
+  if (status === 'completed') {
+    await db('orders').where({ id: exchange.order_id }).update({ status: 'exchanged' });
+  }
+```
+
+#### How to fix
+Enforce a state machine instead of a value allowlist: only permit `requested → received`, `received → completed`, and `requested|received → rejected`, rejecting any other transition with 409. Add a `price_delta_cents` computation at `received` time (`widgets.price_cents[replacement] - widgets.price_cents[returned]`) and require a captured payment (or a refund, if negative) via `fauxpayClient` before allowing the transition to `completed`. Validate `returned_widget_id`/`returned_quantity` against `order_items` for the same order before accepting the exchange request.
+
+**Exploitability:** Business-logic gap with no compensating control; requires only a staff-role session (or Finding #1's JWT forgery) and two HTTP calls. Direct, repeatable financial loss.
+
+#### Adversarial verification
+**Verdict:** TRUE_POSITIVE (confidence: 9/10) — `cs.js:93-114` verified to allow any status transition and to never reference `widgets.price_cents` or create a payment/refund row; `20260101000008_create_refunds_exchanges.js:13-25` confirms the `exchanges` table has no settlement column. Not present among this report's Findings or Dropped Findings prior to this pass; the corresponding pre-verification threat (T20) never received deep-dive coverage.
 
 ## Exploit Chains
 

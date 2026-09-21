@@ -74,15 +74,15 @@ services:
 
   # Fictional payment processor, local to this training stack. There is no
   # production equivalent of this service: the deployed API calls the real
-  # processor's hosted API instead. The key below is a fixed training default so
-  # the stack boots with no setup — in production the processor's secret key
-  # comes from a secrets manager, is injected at runtime into the api service
-  # only, is rotated on a schedule, and has no working fallback value anywhere in
-  # the repo or the compose file.
+  # processor's hosted API instead. No `:-` default here: FAUXPAY_API_KEY must
+  # come from .env (see .env.example), and fauxpay/src/server.js exits at
+  # startup if it is unset — in production the processor's secret key comes
+  # from a secrets manager, is injected at runtime into the api service only,
+  # and is rotated on a schedule.
   fauxpay:
     build: ./fauxpay
     environment:
-      FAUXPAY_API_KEY: ${FAUXPAY_API_KEY:-fauxpay_test_key}
+      FAUXPAY_API_KEY: ${FAUXPAY_API_KEY:?FAUXPAY_API_KEY must be set}
     volumes:
       # Read-write: this is the only container that ever writes the cert/key
       # (see docker-entrypoint.sh). Others mount it read-only to trust it.
