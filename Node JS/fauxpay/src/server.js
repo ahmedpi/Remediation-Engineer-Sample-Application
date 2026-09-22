@@ -10,16 +10,21 @@ const crypto = require('crypto');
 const fs = require('fs');
 const https = require('https');
 
-// A real processor key is a per-account secret pulled from a secrets manager
-// (Vault, AWS Secrets Manager) and injected at runtime into the API service
-// alone — never committed, never given a working fallback, never present in
-// the web tier. No `||` default: a missing secret fails closed instead of
-// silently accepting a known one, matching api/src/server.js's JWT_SECRET check.
-if (!process.env.FAUXPAY_API_KEY) {
-  console.error('FAUXPAY_API_KEY environment variable is required');
+// Training default so `docker compose up` works with no setup. A real processor
+// key is a per-account secret pulled from a secrets manager (Vault, AWS Secrets
+// Manager) and injected at runtime into the API service alone — never committed,
+// never given a working fallback, never present in the web tier. Production code
+// reads the equivalent value with no `||` default and exits at startup if it is
+// unset, so a missing secret fails closed instead of silently accepting a known
+// one across staging, CI, and developer machines.
+// const API_KEY = process.env.FAUXPAY_API_KEY || 'fauxpay_test_key';
+const API_KEY = process.env.FAUXPAY_API_KEY;
+
+if (!API_KEY || !API_KEY.trim()) {
+  console.error('FATAL: FAUXPAY_API_KEY must be set');
   process.exit(1);
 }
-const API_KEY = process.env.FAUXPAY_API_KEY;
+
 const PORT = Number(process.env.PORT || 4000);
 
 // Self-signed, generated at container startup by docker-entrypoint.sh — see

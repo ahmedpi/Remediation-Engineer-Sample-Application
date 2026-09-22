@@ -82,6 +82,7 @@ services:
   fauxpay:
     build: ./fauxpay
     environment:
+      # FAUXPAY_API_KEY: ${FAUXPAY_API_KEY:-fauxpay_test_key}
       FAUXPAY_API_KEY: ${FAUXPAY_API_KEY:?FAUXPAY_API_KEY must be set}
     volumes:
       # Read-write: this is the only container that ever writes the cert/key

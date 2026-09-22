@@ -69,8 +69,27 @@ router.post('/', asyncHandler(async (req, res) => {
   try {
     chargeResult = await fauxpay.charge({ cardToken: card_token, amountCents: totalCents, orderId: order.id });
   } catch (err) {
-    await db('orders').where({ id: order.id }).update({ status: 'cancelled' });
-    return res.status(payErrorStatus(err)).json({ error: 'Payment failed', detail: err.data?.error });
+    // await db('orders').where({ id: order.id }).update({ status: 'cancelled' });
+    // return res.status(payErrorStatus(err)).json({ error: 'Payment failed', detail: err.data?.error });
+
+    await db.transaction(async (trx) => {
+      const cancelled = await trx('orders')
+        .where({ id: order.id, status: 'pending_payment' })
+        .update({ status: 'cancelled' });
+
+      if (cancelled) {
+        for (const li of lineItems) {
+          await trx('widgets')
+            .where({ id: li.widget_id })
+            .increment('stock_quantity', li.quantity);
+        }
+      }
+    });
+
+    return res.status(payErrorStatus(err)).json({
+      error: 'Payment failed',
+      detail: err.data?.error,
+    });
   }
 
   const [paymentRow] = await db('payments')

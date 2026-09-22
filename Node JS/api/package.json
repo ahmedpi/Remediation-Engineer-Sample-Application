@@ -4,6 +4,7 @@
   "private": true,
   "main": "src/server.js",
   "scripts": {
+    "test": "node --test test/*.test.js",
     "start": "node src/server.js",
     "dev": "node --watch src/server.js",
     "migrate": "knex --knexfile src/db/knexfile.js migrate:latest",
